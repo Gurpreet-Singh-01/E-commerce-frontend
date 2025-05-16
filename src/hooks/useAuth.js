@@ -6,11 +6,12 @@ const useAuth = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const login = (userData) => {
-    dispatch(setCredentials({ userData }));
+    dispatch(setCredentials({ user: userData }));
   };
 
   const refresh = async () => {
     try {
+      // API here
       const response = {
         user: {
           id: '1',
@@ -42,7 +43,7 @@ const useAuth = () => {
     role: getRole(),
     login,
     refresh,
-    logout: logoutUser(),
+    logout: logoutUser,
   };
 };
 
