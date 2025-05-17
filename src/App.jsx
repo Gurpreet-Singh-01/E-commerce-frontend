@@ -1,32 +1,28 @@
 import useAuth from "./hooks/useAuth"
+import api from "./services/api"
 
 const App = () => {
-  const { user, isAuthenticated, role, login, refresh, logout } = useAuth();
-  const testUser = {
-    id:'1',
-    name:'test user',
-    email: 'test@gmail.com',
-    role:'customer'
+  const testAPI = async() =>{
+    try {
+      const response = await api.get("/user/user");
+      console.log(response.data)
+    } catch (error) {
+      console.log("In Error Block")
+      console.log("API Error", error)
+    }
   }
   return (
     <div className="min-h-screen p-4">
       <h1 className="text-3xl font-bold text-center">
-        Auth: {isAuthenticated ? `${user.name} (${role})` : 'Not Logged In'}
+        Testing API
       </h1>
 
       <button
-        className="px-4 py-2 rounded mr-2"
-        onClick={() => login(testUser)}
-      >Test Login</button>
+        className="px-4 py-2 rounded mr-2 border-2 border-black"
+        onClick={testAPI}
+      >Test</button>
 
-      <button
-        className="px-4 py-2 rounded mr-2"
-        onClick={refresh}
-      >Test refresh</button>
-      <button
-        className="px-4 py-2 rounded mr-2"
-        onClick={logout}
-      >Test Logout</button>
+      
 
     </div>
   )
