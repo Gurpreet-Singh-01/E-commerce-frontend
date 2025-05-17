@@ -16,7 +16,7 @@ export const createProduct = async(data) =>{
 }
 
 export const updateProduct = async(id,data) =>{
-    const response = await api.patch(`/product/${id}`)
+    const response = await api.patch(`/product/${id}`,data)
     return response.data.data
 }
 
