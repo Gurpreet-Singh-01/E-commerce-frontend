@@ -1,28 +1,23 @@
-import React from 'react'
-import useAuth from './hooks/useAuth'
-import { loginUser } from './services/userService'
-
+import {useQuery} from '@tanstack/react-query'
+import { getProducts } from './services/productService';
 const App = () => {
-  const { isAuthenticated, login, logout, refresh, role, user } = useAuth()
-  const handleLogin = async() =>{
-    try {
-      const response = await loginUser('techtrendz103@gmail.com','techtrendz103@gmail.com_AdminPassword');
-      console.log(response.user)
-      login(response.user)
-    } catch (error) {
-      console.log('Login Error',error)
-    }
-  }
+  const {data,isLoading,error} = useQuery({
+    queryKey:['products'],
+    queryFn: () =>getProducts({search:'cover'})
+  });
   return (
-    <div className='min-h-screen p-4'>
-      <h1>
-        AUTH: {isAuthenticated ? `${user.name} (${role})`: "Not logged in "}
-      </h1>
-      <button className='border-2 border-amber-800' onClick={handleLogin}>Login</button>
-      <button className='border-2 border-amber-800' onClick={refresh}>Refresh Token</button>
-      <button className='border-2 border-amber-800' onClick={logout}>Logout</button>
-
-
+    <div className='min-h-screen'>
+      <h1>Products</h1>
+      {isLoading && <p>Loading....</p>}
+      {error && <p>Error:{error.message}</p>}
+      {data && (
+        <ul>
+          {data.data.map((product) =>(
+            <li key={product._id}>{product.name}</li>
+          ))}
+        </ul>
+      )}
+      {data?.message}
     </div>
   )
 }
