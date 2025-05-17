@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, setCredentials, updateUser } from '../store/authSlice';
+import { logoutUser, refreshAccessToken } from '../services/userService';
 
 const useAuth = () => {
   const dispatch = useDispatch();
@@ -11,17 +12,8 @@ const useAuth = () => {
 
   const refresh = async () => {
     try {
-      // API here
-      const response = {
-        user: {
-          id: '1',
-          name: 'test user',
-          email: 'test@gmail.com',
-          role: 'customer',
-        },
-      };
-
-      dispatch(updateUser({ user: response.user }));
+      const { user } = await refreshAccessToken();
+      dispatch(updateUser({ user }));
       return true;
     } catch (error) {
       dispatch(logout());
@@ -29,8 +21,14 @@ const useAuth = () => {
     }
   };
 
-  const logoutUser = () => {
-    dispatch(logout());
+  const logout_User = async () => {
+    try {
+      await logoutUser();
+      dispatch(logout);
+    } catch (error) {
+      console.log('use auth error', error);
+      dispatch(error);
+    }
   };
 
   const getRole = () => {
@@ -43,7 +41,7 @@ const useAuth = () => {
     role: getRole(),
     login,
     refresh,
-    logout: logoutUser,
+    logout: logout_User,
   };
 };
 
