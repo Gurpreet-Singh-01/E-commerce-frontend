@@ -24,10 +24,10 @@ const useAuth = () => {
   const logout_User = async () => {
     try {
       await logoutUser();
-      dispatch(logout);
+      dispatch(logout());
     } catch (error) {
       console.log('use auth error', error);
-      dispatch(error);
+      dispatch(logout());
     }
   };
 
