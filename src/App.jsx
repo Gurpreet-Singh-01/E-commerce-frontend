@@ -6,7 +6,7 @@ const App = () => {
   const { isAuthenticated, login, logout, refresh, role, user } = useAuth()
   const handleLogin = async() =>{
     try {
-      const response = await loginUser('prxxt.gurii@gmail.com','987654321');
+      const response = await loginUser('techtrendz103@gmail.com','techtrendz103@gmail.com_AdminPassword');
       console.log(response.user)
       login(response.user)
     } catch (error) {
