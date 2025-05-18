@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { updateUser, logout } from '../store/authSlice';
-import { refreshAccessToken } from './userService';
+import { logoutUser, refreshAccessToken } from './userService';
 import { store } from '../store/index';
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -20,6 +20,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         store.dispatch(logout());
+        await logoutUser()
         return Promise.reject(refreshError);
       }
     }
