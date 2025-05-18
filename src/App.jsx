@@ -1,9 +1,9 @@
 import { useSelector, useDispatch } from "react-redux"
-import { useQuery } from '@tanstack/react-query'
-import { setCart } from './store/cartSlice'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { clearCart, setCart } from './store/cartSlice'
 import { getCart, addToCart as addToCartApi } from './services/cartService'
 import { getProducts } from './services/productService'
-import { getUsersOrder } from './services/orderService'
+import { getUsersOrder, createOrder } from './services/orderService'
 import useAuth from './hooks/useAuth'
 import { loginUser } from './services/userService'
 
@@ -11,7 +11,7 @@ const App = () => {
   const dispatch = useDispatch();
   const { items, totalQuantity, totalPrice } = useSelector((state) => state.cart)
   const { login } = useAuth()
-
+  const queryClient = useQueryClient();
   const { data: cartData, isLoading: cartLoading, error: cartError } = useQuery({
     queryKey: ['cart'],
     queryFn: async () => {
@@ -31,10 +31,29 @@ const App = () => {
     queryFn: getUsersOrder
   })
 
+  const orderMutation = useMutation({
+    mutationFn: createOrder,
+    onSuccess: (response) => {
+      if (response.success) {
+        dispatch(clearCart());
+        queryClient.invalidateQueries(['cart'])
+        queryClient.invalidateQueries(['orders'])
+        alert(response.message)
+      }
+      else {
+        alert(response.message || 'Failed to create order')
+      }
+    },
+    onError: (error) => {
+      console.log(error.response.data?.message)
+      alert(error.response.data?.message || 'Failed to create order')
+    }
+  })
+
   const handleAddToCart = async () => {
     try {
       const productId = '6820e19a4e2dffb48104c903';
-      const response = await addToCartApi(productId, 3);
+      const response = await addToCartApi(productId, 1);
       dispatch(setCart(response.cart))
       alert(response.message)
     } catch (error) {
@@ -53,6 +72,38 @@ const App = () => {
     }
   }
 
+
+  const handleCreateOrder = async () => {
+    if (!cartData?.cart?.items?.length) {
+      alert("Cart is empty")
+      return;
+    }
+
+    const orderData = {
+      items: cartData.cart.items.map((item) => ({
+        productId: item.id,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      totalAmount: cartData.cart.totalPrice,
+      shippingAddress: {
+        houseNumber: '1212',
+        street: '4',
+        colony: 'Pcte baddowal',
+        city: 'ludhiana',
+        state: 'punjab',
+        country: 'India',
+        postalCode: '141013',
+      },
+      payment: {
+        method: 'cod',
+        status: 'pending',
+      },
+    }
+    orderMutation.mutate(orderData)
+  }
+
+
   return (
     <div>
       <h1>Cart: {totalQuantity} items, ₹{totalPrice}</h1>
@@ -62,15 +113,15 @@ const App = () => {
         <>
           <p className="text-center text-gray mb-4">{cartData.message}</p>
           {cartData?.cart?.items.length > 0 ? (
-              <ul>
-                {cartData.cart.items.map((item) => (
-                  <li key={item.id}>
-                    {item.name} - {item.quantity} x ₹{item.price}
-                    <img src={item.image} alt={item.name} className="w-16 h-16 object-cover inline-block ml-2" />
-                  </li>
-                ))}
-              </ul>
-            ) : (<p className="text-center">Your cart is empty</p>)
+            <ul>
+              {cartData.cart.items.map((item) => (
+                <li key={item.id}>
+                  {item.name} - {item.quantity} x ₹{item.price}
+                  <img src={item.image} alt={item.name} className="w-16 h-16 object-cover inline-block ml-2" />
+                </li>
+              ))}
+            </ul>
+          ) : (<p className="text-center">Your cart is empty</p>)
           }
         </>
       )}
@@ -102,7 +153,7 @@ const App = () => {
       {ordersData && (
         <>
           <p className="text-center text-gray mb-4">{ordersData.message}</p>
-          {ordersData.data.length > 0 ?(
+          {ordersData.data.length > 0 ? (
             <ul>
               {ordersData.data.map((order) => (
                 <li key={order.id}>
@@ -124,12 +175,22 @@ const App = () => {
                 </li>
               ))}
             </ul>
-            ):(
-              <p className="text-center">No orders found</p>
-            )
-        }
+          ) : (
+            <p className="text-center">No orders found</p>
+          )
+          }
         </>
       )}
+
+      <button
+        className={`bg-primary text-secondary px-4 py-2 rounded ${!cartData?.data?.items?.length ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+        onClick={handleCreateOrder}
+        disabled={!cartData?.data?.items?.length}
+      >
+        Place Order
+      </button>
+
     </div>
   )
 }
