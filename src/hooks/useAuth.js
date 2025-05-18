@@ -35,6 +35,10 @@ const useAuth = () => {
     return user?.role || null;
   };
 
+  const isAdmin = () =>{
+    return user?.role === 'admin';
+  }
+
   return {
     user,
     isAuthenticated,
@@ -42,6 +46,7 @@ const useAuth = () => {
     login,
     refresh,
     logout: logout_User,
+    isAdmin,
   };
 };
 
