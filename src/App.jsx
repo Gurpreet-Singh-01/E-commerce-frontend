@@ -1,23 +1,23 @@
-import {useQuery} from '@tanstack/react-query'
-import { getProducts } from './services/productService';
+import { getCategories } from './services/categoryService'
+import { useQuery } from '@tanstack/react-query'
 const App = () => {
-  const {data,isLoading,error} = useQuery({
-    queryKey:['products'],
-    queryFn: () =>getProducts({search:'cover'})
-  });
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () =>getCategories()
+  })
   return (
-    <div className='min-h-screen'>
-      <h1>Products</h1>
-      {isLoading && <p>Loading....</p>}
-      {error && <p>Error:{error.message}</p>}
-      {data && (
-        <ul>
-          {data.data.map((product) =>(
-            <li key={product._id}>{product.name}</li>
-          ))}
-        </ul>
-      )}
-      {data?.message}
+    <div>
+      <h2>Categories</h2>
+      {isLoading && <h1>Loading.....</h1>}
+      {error && <h1>Error: {error.message}</h1>}
+      <ul>
+        {
+          data && data.data.map((item) =>(
+            <li key={item._id}>{item.name}</li>
+          ))
+        }
+      </ul>
+      <p>Message:- {data?.message}</p>
     </div>
   )
 }
