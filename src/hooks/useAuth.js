@@ -1,10 +1,27 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, setCredentials, updateUser } from '../store/authSlice';
 import { logoutUser, refreshAccessToken } from '../services/userService';
+import { useEffect, useState } from 'react';
 
 const useAuth = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const tryRefresh = async () => {
+      if (!user && !isAuthenticated) {
+        try {
+          const { user: refreshedUser } = await refreshAccessToken();
+          dispatch(updateUser({ user: refreshedUser }));
+        } catch (error) {
+          console.log('Auto-refresh failed:', error);
+          dispatch(logout());
+        }
+      }
+      setIsLoading(false);
+    };
+    tryRefresh();
+  }, [dispatch]);
 
   const login = (userData) => {
     dispatch(setCredentials({ user: userData }));
@@ -35,9 +52,9 @@ const useAuth = () => {
     return user?.role || null;
   };
 
-  const isAdmin = () =>{
+  const isAdmin = () => {
     return user?.role === 'admin';
-  }
+  };
 
   return {
     user,
@@ -47,6 +64,7 @@ const useAuth = () => {
     refresh,
     logout: logout_User,
     isAdmin,
+    isLoading
   };
 };
 

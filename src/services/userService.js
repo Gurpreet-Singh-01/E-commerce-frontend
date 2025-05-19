@@ -28,6 +28,11 @@ export const logoutUser = async () => {
   await api.get('user/logout_user');
 };
 
+export const resendOTP = async (email) => {
+  const response = await api.post('/user/resend_otp', { email });
+  return response.data;
+};
+
 export const changeCurrentPassword = async (oldPassword, newPassword) => {
   const response = await api.post('/user/change_password', {
     oldPassword,
@@ -51,8 +56,14 @@ export const resetPassword = async (email, otp, newPassword) => {
 };
 
 export const refreshAccessToken = async () => {
-  const response = await api.post('/user/refresh_access_token');
-  return response.data;
+  try {
+    const response = await api.post('/user/refresh_access_token');
+    return response.data.data; 
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || 'Failed to refresh token'
+    );
+  }
 };
 
 export const getUserProfile = async () => {
