@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const OrderCard = ({ order }) => {
   return (
     <div className="bg-surface shadow-md rounded-xl p-6 font-text space-y-4 max-w-md w-full">
@@ -12,8 +14,6 @@ const OrderCard = ({ order }) => {
               ? 'bg-success text-secondary'
               : order.status === 'pending'
               ? 'bg-warning text-neutral-dark'
-              : order.status === 'shipped'
-              ? 'bg-accent text-secondary' 
               : 'bg-error text-secondary'
           }`}
         >
@@ -44,15 +44,16 @@ const OrderCard = ({ order }) => {
         </ul>
       </div>
 
-      {/* Placeholder for Link */}
-      <button
-        disabled
-        className="text-primary text-sm mt-2 block cursor-default opacity-60"
+      {/* Link to details */}
+      <Link
+        to={`/orders/${order.id}`}
+        className="text-primary hover:underline text-sm mt-2 inline-block"
       >
-        View Details (disabled for test)
-      </button>
+        View Details
+      </Link>
     </div>
   );
 };
 
 export default OrderCard;
+
