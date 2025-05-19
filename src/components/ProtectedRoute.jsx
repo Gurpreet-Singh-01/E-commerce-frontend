@@ -11,7 +11,6 @@ const ProtectedRoute = ({ children }) => {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  {console.log("Protected Route log",user)}
   return children;
 };
 

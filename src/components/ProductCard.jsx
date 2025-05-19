@@ -4,12 +4,14 @@ import Button from './Button';
 const ProductCard = ({ product, onAddToCart }) => {
   return (
     <div className="bg-surface shadow-md rounded-lg overflow-hidden transition-transform hover:scale-105 font-text">
-      <Link to={`/products/${product.id}`}>
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-48 object-cover"
-        />
+      <Link to={`/products/${product._id}`}>
+        <div className="relative w-full aspect-square">
+          <img
+            src={product.image.url}
+            alt={product.name}
+            className="absolute top-0 left-0 w-full h-full object-contain"
+          />
+        </div>
       </Link>
       <div className="p-4">
         <h3 className="text-lg font-semibold truncate font-headings">
@@ -19,8 +21,8 @@ const ProductCard = ({ product, onAddToCart }) => {
         <p className="text-neutral text-xs mt-1">Stock: {product.stock}</p>
         <Button
           variant="primary"
-          size="small"
-          onClick={() => onAddToCart(product.id, 1)}
+          size="medium"
+          onClick={() => onAddToCart(product._id, 1)}
           disabled={product.stock === 0}
           className="mt-4 w-full"
         >
