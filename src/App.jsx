@@ -13,6 +13,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
+import ProductDetails from './pages/ProductDetails';
 
 const App = () => {
   return (
@@ -30,6 +31,13 @@ const App = () => {
           <>
             <Navbar />
             <Products />
+            <Footer />
+          </>
+        } />
+        <Route path="/products/:id" element={
+          <>
+            <Navbar />
+            <ProductDetails />
             <Footer />
           </>
         } />
