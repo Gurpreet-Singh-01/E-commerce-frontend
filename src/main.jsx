@@ -8,11 +8,9 @@ import './index.css';
 import App from './App.jsx';
 
 createRoot(document.getElementById('root')).render(
- 
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </Provider>
-
+  <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </Provider>
 );

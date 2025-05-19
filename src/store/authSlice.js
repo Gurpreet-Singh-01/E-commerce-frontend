@@ -1,8 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  user: null,
-  isAuthenticated: false,
+  // user: null,
+  // isAuthenticated: false,
+
+  // below temp for navbar
+  user: {id:"something",
+    name:"Gurpreet",
+    role:"customer",
+    email:"guri29122003@gmail.com"
+  },
+  isAuthenticated: true,
 };
 
 const authSlice = createSlice({

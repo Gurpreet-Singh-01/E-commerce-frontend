@@ -58,11 +58,9 @@ export const resetPassword = async (email, otp, newPassword) => {
 export const refreshAccessToken = async () => {
   try {
     const response = await api.post('/user/refresh_access_token');
-    return response.data.data; 
+    return response.data.data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || 'Failed to refresh token'
-    );
+    throw new Error(error.response?.data?.message || 'Failed to refresh token');
   }
 };
 
@@ -99,12 +97,12 @@ export const addAddress = async (
   return response.data;
 };
 
-export const updateAddress = async (id ,data) =>{
-    const response= await api.patch(`/user/update_address/${id}`,data)
-    return response.data;
-}
+export const updateAddress = async (id, data) => {
+  const response = await api.patch(`/user/update_address/${id}`, data);
+  return response.data;
+};
 
-export const deleteAddress = async(id) =>{
-    const response = await api.delete(`/user/delete_address/${id}`)
-    return response.data
-}
+export const deleteAddress = async (id) => {
+  const response = await api.delete(`/user/delete_address/${id}`);
+  return response.data;
+};

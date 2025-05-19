@@ -1,1 +1,83 @@
 @import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Colors */
+  --color-primary: #1e40af;
+  /* Blue: Main brand color for buttons, links */
+  --color-primary-dark: #1e3a8a;
+  /* Darker blue: Hover states */
+  --color-secondary: #ffffff;
+  /* White: Backgrounds, text on dark */
+  --color-accent: #fbbf24;
+  /* Yellow: Highlights, CTAs */
+  --color-success: #10b981;
+  /* Green: Success messages, delivered status */
+  --color-error: #ef4444;
+  /* Red: Errors, cancel buttons */
+  --color-warning: #f59e0b;
+  /* Orange: Warnings, pending status */
+  --color-neutral: #6b7280;
+  /* Gray: Secondary text, borders */
+  --color-neutral-light: #e5e7eb;
+  /* Light gray: Backgrounds, dividers */
+  --color-neutral-dark: #374151;
+  /* Dark gray: Text on light backgrounds */
+  --color-background: #f3f4f6;
+  /* Light gray: Page background */
+  --color-surface: #ffffff;
+  /* White: Cards, modals */
+
+  /* Container */
+  --container-padding: 1rem;
+  --container-margin: auto;
+  --container-max-width: 80rem;
+  /* 1280px, standard for large screens */
+
+  /* Typography */
+  --font-size-xs: 0.75rem;
+  /* Small text, captions */
+  --font-size-sm: 0.875rem;
+  /* Secondary text */
+  --font-size-base: 1rem;
+  /* Body text */
+  --font-size-lg: 1.125rem;
+  /* Headings, buttons */
+  --font-size-xl: 1.25rem;
+  /* Subheadings */
+  --font-size-2xl: 1.5rem;
+  /* Main headings */
+  --font-size-3xl: 1.875rem;
+  /* Page titles */
+
+  /* Spacing */
+  --spacing-1: 0.25rem;
+  /* 4px */
+  --spacing-2: 0.5rem;
+  /* 8px */
+  --spacing-3: 0.75rem;
+  /* 12px */
+  --spacing-4: 1rem;
+  /* 16px */
+  --spacing-6: 1.5rem;
+  /* 24px */
+  --spacing-8: 2rem;
+  /* 32px */
+
+  --font-logo: 'Poppins', sans-serif;
+  --font-headings: 'Montserrat', sans-serif;
+  --font-text: 'Roboto', sans-serif;
+}
+
+/* Global Styles */
+body {
+  @apply bg-background text-neutral-dark font-logo;
+}
+
+/* Container Utility */
+.container {
+  margin: var(--container-margin);
+  padding: var(--container-padding);
+  max-width: var(--container-max-width);
+}

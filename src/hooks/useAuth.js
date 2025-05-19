@@ -64,7 +64,7 @@ const useAuth = () => {
     refresh,
     logout: logout_User,
     isAdmin,
-    isLoading
+    isLoading,
   };
 };
 

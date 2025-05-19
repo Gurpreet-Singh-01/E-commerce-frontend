@@ -20,7 +20,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         store.dispatch(logout());
-        await logoutUser()
+        await logoutUser();
         return Promise.reject(refreshError);
       }
     }
