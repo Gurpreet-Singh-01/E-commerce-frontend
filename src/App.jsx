@@ -1,12 +1,12 @@
 import React from 'react'
 import Toast from './components/Toast'
-import AddressCard from './components/AddressCard'
+import TestAddressCard from './components/TestAddressCard'
 
 const App = () => {
   return (
     <>
       <Toast/>
-      <AddressCard />
+      <TestAddressCard />
     </>
   )
 }

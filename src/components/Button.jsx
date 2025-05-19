@@ -12,10 +12,10 @@ const Button = ({
     const baseStyles = 'font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 font-text';
     const variantStyles = {
         primary: 'bg-primary text-secondary hover:bg-primary-dark focus:ring-primary',
-        secondary: 'bg-neutral-light text-neutral-dark hover:bg-neutral focus:ring-neutral',
+        secondary: 'bg-neutral-light text-neutral-dark hover:bg-neutral/30 focus:ring-neutral',
         danger: 'bg-error text-secondary hover:bg-error/90 focus:ring-error',
         success: 'bg-success text-secondary hover:bg-success/90 focus:ring-success',
-        warning: 'bg-warning text-neutral-dark hover:bg-warning/90 focus:ring-warning',
+        warning: 'bg-warning text-secondary hover:bg-warning/90 focus:ring-warning',
     };
 
     const sizeStyles = {
