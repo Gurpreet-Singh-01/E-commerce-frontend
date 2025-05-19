@@ -1,37 +1,37 @@
-import React from 'react';
-import Button from './components/Button'
+import { useForm } from "react-hook-form";
+import Input from "./components/Input";
 
 const App = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+
   return (
-    <div className="space-y-4 p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-xl font-bold">Button Variants</h2>
-
-      <div className="space-x-4">
-        <Button variant="primary">Primary</Button>
-        <Button variant="secondary">Secondary</Button>
-        <Button variant="danger">Danger</Button>
-        <Button variant="success">Success</Button>
-        <Button variant="warning">Warning</Button>
-      </div>
-
-      <h2 className="text-xl font-bold mt-6">Button Sizes</h2>
-      <div className="space-x-4">
-        <Button size="small">Small</Button>
-        <Button size="medium">Medium</Button>
-        <Button size="large">Large</Button>
-      </div>
-
-      <h2 className="text-xl font-bold mt-6">Disabled State</h2>
-      <div className="space-x-4">
-        <Button disabled>Disabled Primary</Button>
-        <Button variant="danger" disabled>Disabled Danger</Button>
-      </div>
-
-      <h2 className="text-xl font-bold mt-6">Click Test</h2>
-      <Button onClick={() => alert('Button clicked!')}>
-        Click Me
-      </Button>
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <Input
+        label="Email"
+        name="email"
+        type="email"
+        register={register}
+        error={errors.email}
+      />
+      <Input
+        label="Password"
+        name="password"
+        type="password"
+        register={register}
+        error={errors.password}
+      />
+      <button type="submit" className="bg-primary text-white px-4 py-2 rounded">
+        Submit
+      </button>
+    </form>
   );
 };
 
