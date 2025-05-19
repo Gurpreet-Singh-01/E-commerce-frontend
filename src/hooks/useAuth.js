@@ -6,22 +6,40 @@ import { useEffect, useState } from 'react';
 const useAuth = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!user && !isAuthenticated);
+
   useEffect(() => {
+    let isMounted = true;
+
     const tryRefresh = async () => {
-      if (!user && !isAuthenticated) {
+      if (!user && !isAuthenticated && isMounted) {
         try {
+          setIsLoading(true);
           const { user: refreshedUser } = await refreshAccessToken();
-          dispatch(updateUser({ user: refreshedUser }));
+          if (isMounted) {
+            dispatch(updateUser({ user: refreshedUser }));
+          }
         } catch (error) {
           console.log('Auto-refresh failed:', error);
-          dispatch(logout());
+          if (isMounted) {
+            dispatch(logout());
+          }
+        } finally {
+          if (isMounted) {
+            setIsLoading(false);
+          }
         }
+      }else{
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
     tryRefresh();
-  }, [dispatch]);
+
+    return () =>{
+      isMounted=false
+    }
+
+  }, [dispatch,user,isAuthenticated]);
 
   const login = (userData) => {
     dispatch(setCredentials({ user: userData }));

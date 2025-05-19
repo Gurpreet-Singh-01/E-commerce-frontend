@@ -12,7 +12,9 @@ const ProductCard = ({ product, onAddToCart }) => {
         />
       </Link>
       <div className="p-4">
-        <h3 className="text-lg font-semibold truncate font-headings">{product.name}</h3>
+        <h3 className="text-lg font-semibold truncate font-headings">
+          {product.name}
+        </h3>
         <p className="text-neutral text-sm mt-1">₹{product.price.toFixed(2)}</p>
         <p className="text-neutral text-xs mt-1">Stock: {product.stock}</p>
         <Button

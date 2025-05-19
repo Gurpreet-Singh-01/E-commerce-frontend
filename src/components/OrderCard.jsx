@@ -13,8 +13,8 @@ const OrderCard = ({ order }) => {
             order.status === 'delivered'
               ? 'bg-success text-secondary'
               : order.status === 'pending'
-              ? 'bg-warning text-neutral-dark'
-              : 'bg-error text-secondary'
+                ? 'bg-warning text-neutral-dark'
+                : 'bg-error text-secondary'
           }`}
         >
           {order.status}
@@ -56,4 +56,3 @@ const OrderCard = ({ order }) => {
 };
 
 export default OrderCard;
-

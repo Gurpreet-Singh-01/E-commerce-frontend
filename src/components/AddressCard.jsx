@@ -9,7 +9,7 @@ const AddressCard = ({ address, onEdit, onDelete, isDefault }) => {
         </span>
       )}
 
-      <div className="space-y-1 mt-1 pr-16"> 
+      <div className="space-y-1 mt-1 pr-16">
         <p className="text-neutral-dark font-medium font-headings">
           {address.houseNumber}, {address.street}
         </p>
@@ -22,10 +22,18 @@ const AddressCard = ({ address, onEdit, onDelete, isDefault }) => {
       </div>
 
       <div className="flex space-x-2 pt-3">
-        <Button variant="secondary" size="medium" onClick={() => onEdit(address.id)}>
+        <Button
+          variant="secondary"
+          size="medium"
+          onClick={() => onEdit(address.id)}
+        >
           Edit
         </Button>
-        <Button variant="danger" size="medium" onClick={() => onDelete(address.id)}>
+        <Button
+          variant="danger"
+          size="medium"
+          onClick={() => onDelete(address.id)}
+        >
           Delete
         </Button>
       </div>
