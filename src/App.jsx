@@ -1,8 +1,11 @@
 import React from 'react'
+import TestOrderCard from './components/TestOrderCard'
 
 const App = () => {
   return (
-    <div>App</div>
+    <div>
+      <TestOrderCard/>
+    </div>
   )
 }
 
