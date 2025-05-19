@@ -1,38 +1,30 @@
-import { useForm } from "react-hook-form";
-import Input from "./components/Input";
+import React, { useState } from 'react'
+import Button from './components/Button'
+import Modal from './components/Modal'
 
 const App = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  const onSubmit = (data) => {
-    console.log(data);
-  };
-
+  const [isOpen, setIsOpen] = useState()
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Input
-        label="Email"
-        name="email"
-        type="email"
-        register={register}
-        error={errors.email}
-      />
-      <Input
-        label="Password"
-        name="password"
-        type="password"
-        register={register}
-        error={errors.password}
-      />
-      <button type="submit" className="bg-primary text-white px-4 py-2 rounded">
-        Submit
-      </button>
-    </form>
-  );
-};
+    <div>
+      <p>There has to be something right</p>
+      <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Checking Modal"
+        footer={
+          <>
+            <Button variant='success' onClick={() => { alert('Yes !!!'); setIsOpen(false) }}>Confirm</Button>
+            <Button variant='danger' onClick={() => setIsOpen(false)}>Cancel</Button>
 
-export default App;
+          </>
+        }
+      >
+        <p>Are you sure this Modal is working fine?</p>
+      </Modal>
+      <p>There has to be something right</p>
+    </div>
+  )
+}
+
+export default App

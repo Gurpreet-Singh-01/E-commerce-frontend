@@ -17,7 +17,7 @@ const Modal = ({ isOpen, onClose, title, children, footer }) => {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 bg-neutral-dark bg-opacity-50 flex items-center justify-center z-50 p-4 font-text">
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4 font-text">
             <div className="bg-surface rounded-lg shadow-xl max-w-md w-full">
                 <div className="flex justify-between items-center p-4 border-b border-neutral-light">
                     <h2 className="text-lg font-semibold font-headings">{title}</h2>
