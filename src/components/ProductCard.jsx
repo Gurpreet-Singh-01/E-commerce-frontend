@@ -4,10 +4,10 @@ import Button from './Button';
 const ProductCard = ({ product, onAddToCart }) => {
   return (
     <div className="bg-surface shadow-md rounded-lg overflow-hidden transition-transform hover:scale-105 font-text">
-      <Link to={`/products/${product._id}`}>
+      <Link to={`/products/${product.id}`}>
         <div className="relative w-full aspect-square">
           <img
-            src={product.image.url}
+            src={product.image}
             alt={product.name}
             className="absolute top-0 left-0 w-full h-full object-contain"
           />
