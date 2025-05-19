@@ -1,28 +1,18 @@
-import React, { useState } from 'react'
-import Button from './components/Button'
-import Modal from './components/Modal'
-
+import React, { useEffect, useState } from 'react'
+import Loader from './components/Loader'
 const App = () => {
-  const [isOpen, setIsOpen] = useState()
+  const [loading,setLoading] = useState(true)
+  useEffect(()=>{
+    const timer = setTimeout( () =>setLoading(false),3000)
+    return () => clearTimeout(timer)
+  },[])
   return (
-    <div>
-      <p>There has to be something right</p>
-      <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
-      <Modal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        title="Checking Modal"
-        footer={
-          <>
-            <Button variant='success' onClick={() => { alert('Yes !!!'); setIsOpen(false) }}>Confirm</Button>
-            <Button variant='danger' onClick={() => setIsOpen(false)}>Cancel</Button>
-
-          </>
-        }
-      >
-        <p>Are you sure this Modal is working fine?</p>
-      </Modal>
-      <p>There has to be something right</p>
+     <div className="h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      {loading ? (
+        <Loader size="medium" />
+      ) : (
+        <p className="text-xl font-bold text-primary">Loaded!</p>
+      )}
     </div>
   )
 }
