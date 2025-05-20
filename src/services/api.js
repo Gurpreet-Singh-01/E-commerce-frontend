@@ -29,7 +29,7 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const url = originalRequest.url || '';
 
-    const publicEndpoints = ['/product/', '/category/'];
+    const publicEndpoints = ['/product/', '/category/', '/login'];
     const isPublicEndpoint = publicEndpoints.some((endpoint) => url.includes(endpoint));
 
     if (
@@ -52,16 +52,18 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        console.debug('Interceptor: Refreshing token for', url);
-        const { user } = await refreshAccessToken();
-        console.debug('Interceptor: Refresh success:', user);
-        store.dispatch(updateUser({ user }));
-        processQueue(null, user);
-        return api(originalRequest);
+        const authState = localStorage.getItem('authState');
+        if (authState && JSON.parse(authState).isAuthenticated) {
+          const { user } = await refreshAccessToken();
+          store.dispatch(updateUser({ user }));
+          processQueue(null, user);
+          return api(originalRequest);
+        }
+        // Pass through original error for public endpoints
+        throw error;
       } catch (refreshError) {
-        console.debug('Interceptor: Refresh failed:', refreshError.message || 'No refresh token');
+        console.debug('Refresh failed:', refreshError.message || 'No refresh token');
         processQueue(refreshError);
-        // Only logout for invalid tokens
         if (refreshError.response?.status === 401 && refreshError.response?.data?.message.includes('Invalid refresh token')) {
           store.dispatch(logout());
         }
@@ -79,6 +81,7 @@ api.interceptors.response.use(
         isRefreshing = false;
       }
     }
+
     const safeError = error.response?.data?.message || error.message || 'Request failed';
     return Promise.reject(new Error(safeError));
   }

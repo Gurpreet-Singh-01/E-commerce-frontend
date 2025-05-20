@@ -17,110 +17,59 @@ import ProductDetails from './pages/ProductDetails';
 
 const App = () => {
   return (
-    <div className="min-h-screen flex flex-col font-text">
-      <Routes>
-        <Route path="/" element={
-          <>
-            <Navbar />
-            <Home />
-            <Footer />
-          </>
-
-        } />
-        <Route path="/products" element={
-          <>
-            <Navbar />
-            <Products />
-            <Footer />
-          </>
-        } />
-        <Route path="/products/:id" element={
-          <>
-            <Navbar />
-            <ProductDetails />
-            <Footer />
-          </>
-        } />
-        <Route path="/login" element={
-          <>
-            <Navbar />
-            <Login />
-            <Footer />
-          </>
-        } />
-        <Route path="/register" element={
-          <>
-            <Navbar />
-            <Register />
-            <Footer />
-          </>
-        } />
-
-        <Route
-          path="/cart"
-          element={
-            <>
-              <Navbar />
+    <div className="flex flex-col min-h-screen font-text">
+      <Navbar />
+      <div className="flex-grow pt-16"> 
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/cart"
+            element={
               <ProtectedRoute>
                 <Cart />
               </ProtectedRoute>
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <>
-              <Navbar />
+            }
+          />
+          <Route
+            path="/profile"
+            element={
               <ProtectedRoute>
                 <Profile />
               </ProtectedRoute>
-              <Footer />
-            </>
-          }
-        />
-        <Route
-          path="/orders"
-          element={
-            <>
-              <Navbar />
+            }
+          />
+          <Route
+            path="/orders"
+            element={
               <ProtectedRoute>
                 <Orders />
               </ProtectedRoute>
-              <Footer />
-
-            </>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <>
-              <Navbar />
+            }
+          />
+          <Route
+            path="/admin"
+            element={
               <AdminRoute>
                 <AdminDashboard />
               </AdminRoute>
-              <Footer />
-
-            </>
-          }
-        />
-        <Route
-          path="/admin/orders"
-          element={
-            <>
-              <Navbar />
+            }
+          />
+          <Route
+            path="/admin/orders"
+            element={
               <AdminRoute>
                 <ManageOrders />
               </AdminRoute>
-              <Footer />
-
-            </>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+      <Footer />
     </div>
   );
 };

@@ -24,9 +24,7 @@ export const verifyUser = async (email, otp) => {
   return response.data;
 };
 
-export const logoutUser = async () => {
-  await api.get('user/logout_user');
-};
+
 
 export const resendOTP = async (email) => {
   const response = await api.post('/user/resend_otp', { email });
@@ -54,16 +52,23 @@ export const resetPassword = async (email, otp, newPassword) => {
   });
   return response.data;
 };
-
 export const refreshAccessToken = async () => {
   try {
     const response = await api.post('/user/refresh_access_token');
-    return response.data.data.user; // Return the user object directly
+    const user = response.data?.data?.user;
+    if (!user || !user._id || !user.role) {
+      throw new Error('Invalid user data in refresh response');
+    }
+    return user;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to refresh token');
   }
 };
 
+export const logoutUser = async () => {
+  await api.get('/user/logout_user');
+  
+};
 export const getUserProfile = async () => {
   const response = await api.get('/user/user');
   return response.data;

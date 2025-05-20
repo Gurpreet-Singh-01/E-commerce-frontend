@@ -37,7 +37,7 @@ const Products = () => {
   });
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['products', { search, appliedCategory, appliedMinPrice, to: appliedMaxPrice }],
+    queryKey: ['products', { search, appliedCategory, appliedMinPrice, appliedMaxPrice }],
     queryFn: () =>
       getProducts({
         search: search.trim() || undefined,
@@ -59,12 +59,7 @@ const Products = () => {
     },
     onError: (error) => {
       console.debug('Add to cart error:', error.message || 'Failed to add to cart');
-      if (error.response?.status === 401) {
-        toast.error('Please log in to add items to cart', { toastId: 'add-to-cart-auth' });
-        navigate('/login');
-      } else {
-        toast.error(error.message || 'Failed to add to cart', { toastId: 'add-to-cart-error' });
-      }
+      toast.error(error.message || 'Failed to add to cart', { toastId: 'add-to-cart-error' });
     },
   });
 
@@ -124,7 +119,6 @@ const Products = () => {
     addToCartMutation.mutate({ productId, quantity: 1 });
   };
 
-  // Wait for auth loading to complete before rendering the main content
   if (authLoading) {
     return <Loader size="large" className="my-8" />;
   }
@@ -136,10 +130,8 @@ const Products = () => {
           Explore Products
         </h1>
 
-        {/* Search and Filters */}
         <div className="mb-8 bg-white p-6 rounded-lg shadow-sm">
           <div className="flex flex-col md:flex-row gap-6">
-            {/* Search */}
             <form onSubmit={handleSearch} className="flex-1">
               <div className="flex items-center gap-2">
                 <Input
@@ -156,7 +148,6 @@ const Products = () => {
               </div>
             </form>
 
-            {/* Filters */}
             <form onSubmit={handleFilter} className="flex-1 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-neutral-dark font-headings mb-1">
@@ -233,7 +224,6 @@ const Products = () => {
           </div>
         </div>
 
-        {/* Products Grid */}
         {isLoading && <Loader size="large" className="my-8" />}
         {data && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

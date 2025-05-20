@@ -1,10 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Load initial state from localStorage if available
 const loadPersistedState = () => {
-  const persistedState = localStorage.getItem('authState');
-  if (persistedState) {
-    return JSON.parse(persistedState);
+  try {
+    const persistedState = localStorage.getItem('authState');
+    if (persistedState) {
+      const parsed = JSON.parse(persistedState);
+      if (parsed.user && typeof parsed.isAuthenticated === 'boolean') {
+        return parsed;
+      }
+    }
+  } catch (error) {
+    console.debug('Failed to parse authState from localStorage:', error.message);
   }
   return {
     user: null,
@@ -19,22 +25,39 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
-      state.user = action.payload.user;
+      state.user = {
+        _id: action.payload.user._id,
+        email: action.payload.user.email,
+        role: action.payload.user.role,
+      };
       state.isAuthenticated = true;
-      // Persist the updated state to localStorage
-      localStorage.setItem('authState', JSON.stringify(state));
+      try {
+        localStorage.setItem('authState', JSON.stringify(state));
+      } catch (error) {
+        console.debug('Failed to save authState to localStorage:', error.message);
+      }
     },
     updateUser: (state, action) => {
-      state.user = action.payload.user;
+      state.user = {
+        _id: action.payload.user._id,
+        email: action.payload.user.email,
+        role: action.payload.user.role,
+      };
       state.isAuthenticated = true;
-      // Persist the updated state to localStorage
-      localStorage.setItem('authState', JSON.stringify(state));
+      try {
+        localStorage.setItem('authState', JSON.stringify(state));
+      } catch (error) {
+        console.debug('Failed to save authState to localStorage:', error.message);
+      }
     },
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-      // Clear persisted state from localStorage
-      localStorage.removeItem('authState');
+      try {
+        localStorage.removeItem('authState');
+      } catch (error) {
+        console.debug('Failed to remove authState from localStorage:', error.message);
+      }
     },
   },
 });
