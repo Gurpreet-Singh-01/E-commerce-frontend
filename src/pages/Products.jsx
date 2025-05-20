@@ -3,6 +3,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { setCart } from '../store/cartSlice';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -10,16 +11,16 @@ import Loader from '../components/Loader';
 import { getProducts } from '../services/productService';
 import { getCategories } from '../services/categoryService';
 import { addToCart } from '../services/cartService';
+import useAuth from '../hooks/useAuth';
 
 const Products = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [search, setSearch] = useState('');
-
-
   const [inputCategory, setInputCategory] = useState('');
   const [inputMinPrice, setInputMinPrice] = useState('');
   const [inputMaxPrice, setInputMaxPrice] = useState('');
-  // Applied filter states for fetching
   const [appliedCategory, setAppliedCategory] = useState('');
   const [appliedMinPrice, setAppliedMinPrice] = useState('');
   const [appliedMaxPrice, setAppliedMaxPrice] = useState('');
@@ -28,11 +29,16 @@ const Products = () => {
   const { data: categoriesData, isLoading: categoriesLoading, error: categoriesError } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories,
+    onError: (err) => {
+      console.debug('Categories fetch error:', err.message || 'Failed to fetch categories');
+      toast.error('Failed to load categories. Please try again.', { toastId: 'categories-error' });
+    },
+    // Retry once for guest users
+    retry: (failureCount, error) => failureCount < 1 && error.response?.status !== 401,
   });
 
-
   const { data, isLoading, error } = useQuery({
-    queryKey: ['products', { search, appliedCategory, appliedMinPrice, appliedMaxPrice }],
+    queryKey: ['products', { search, appliedCategory, appliedMinPrice, to: appliedMaxPrice }],
     queryFn: () =>
       getProducts({
         search: search.trim() || undefined,
@@ -40,9 +46,11 @@ const Products = () => {
         minPrice: appliedMinPrice || undefined,
         maxPrice: appliedMaxPrice || undefined,
       }),
+    onError: (err) => {
+      console.debug('Products fetch error:', err.message || 'Failed to fetch products');
+      toast.error('Failed to load products. Please try again.', { toastId: 'products-error' });
+    },
   });
-
-
 
   const addToCartMutation = useMutation({
     mutationFn: ({ productId, quantity }) => addToCart(productId, quantity),
@@ -51,12 +59,15 @@ const Products = () => {
       toast.success(response.message || 'Added to cart!', { toastId: 'add-to-cart' });
     },
     onError: (error) => {
-      toast.error(error.message || 'Failed to add to cart', {
-        toastId: 'add-to-cart-error',
-      });
+      console.debug('Add to cart error:', error.message || 'Failed to add to cart');
+      if (error.response?.status === 401) {
+        toast.error('Please log in to add items to cart', { toastId: 'add-to-cart-auth' });
+        navigate('/login');
+      } else {
+        toast.error(error.message || 'Failed to add to cart', { toastId: 'add-to-cart-error' });
+      }
     },
   });
-
 
   const validateFilters = () => {
     const newErrors = {};
@@ -105,18 +116,17 @@ const Products = () => {
     setErrors({});
   };
 
-  if (error) {
-    toast.error(error.message || 'Failed to fetch products', { toastId: 'products-error' });
-  }
-  if (categoriesError) {
-    toast.error(categoriesError.message || 'Failed to fetch categories', {
-      toastId: 'categories-error',
-    });
-  }
+  const handleAddToCart = (productId) => {
+    if (!isAuthenticated) {
+      toast.error('Please log in to add items to cart', { toastId: 'add-to-cart-auth' });
+      navigate('/login');
+      return;
+    }
+    addToCartMutation.mutate({ productId, quantity: 1 });
+  };
 
   return (
     <div className="min-h-screen flex flex-col font-text bg-surface">
-
       <main className="container mx-auto px-4 py-8 flex-grow">
         <h1 className="text-3xl font-bold text-center mb-8 font-headings text-neutral-dark">
           Explore Products
@@ -150,6 +160,8 @@ const Products = () => {
                 </label>
                 {categoriesLoading ? (
                   <Loader size="small" />
+                ) : categoriesError || !categoriesData?.data?.length ? (
+                  <p className="text-error text-sm">No categories available</p>
                 ) : (
                   <select
                     name="category"
@@ -158,7 +170,7 @@ const Products = () => {
                     className="w-full border border-neutral-light rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary font-text"
                   >
                     <option value="">All Categories</option>
-                    {categoriesData?.data?.map((cat) => (
+                    {categoriesData.data.map((cat) => (
                       <option key={cat._id} value={cat._id}>
                         {cat.name}
                       </option>
@@ -233,12 +245,7 @@ const Products = () => {
                     image: product.image.url,
                     category: product.category.name,
                   }}
-                  onAddToCart={() =>
-                    addToCartMutation.mutate({
-                      productId: product._id,
-                      quantity: 1,
-                    })
-                  }
+                  onAddToCart={() => handleAddToCart(product._id)}
                 />
               ))
             ) : (
@@ -249,7 +256,6 @@ const Products = () => {
           </div>
         )}
       </main>
-
     </div>
   );
 };

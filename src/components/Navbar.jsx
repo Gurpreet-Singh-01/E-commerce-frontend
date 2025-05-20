@@ -3,19 +3,20 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FaShoppingCart, FaUser, FaBars, FaTimes } from 'react-icons/fa';
 import useAuth from '../hooks/useAuth';
-import { logoutUser } from '../services/userService';
+
 const Navbar = () => {
-  const { user, isAdmin, logout } = useAuth();
+  const { user, isAdmin, logout, isLoading } = useAuth();
   const { totalQuantity } = useSelector((state) => state.cart);
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await logout(); // Calls useAuth's logout_User, which redirects to /login
     } catch (error) {
-      console.error('Logout Error:', error);
+      console.error('Logout Error in Navbar:', error);
     }
   };
+
   return (
     <nav className="bg-primary text-secondary shadow-md">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -28,6 +29,7 @@ const Navbar = () => {
           className="md:hidden text-2xl"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
+          disabled={isLoading}
         >
           {isOpen ? <FaTimes /> : <FaBars />}
         </button>
@@ -39,6 +41,7 @@ const Navbar = () => {
           <Link
             to="/products"
             className="hover:text-accent transition hover:cursor-pointer"
+            onClick={() => setIsOpen(false)}
           >
             Products
           </Link>
@@ -46,6 +49,7 @@ const Navbar = () => {
           <Link
             to="/cart"
             className="relative hover:text-accent transition hover:cursor-pointer"
+            onClick={() => setIsOpen(false)}
           >
             Cart
             {totalQuantity > 0 && (
@@ -59,6 +63,7 @@ const Navbar = () => {
             <Link
               to="/profile"
               className="hover:text-accent transition hover:cursor-pointer"
+              onClick={() => setIsOpen(false)}
             >
               Profile
             </Link>
@@ -67,14 +72,19 @@ const Navbar = () => {
             <Link
               to="/admin"
               className="hover:text-accent transition hover:cursor-pointer"
+              onClick={() => setIsOpen(false)}
             >
               Admin
             </Link>
           )}
           {user ? (
             <button
-              onClick={handleLogout}
+              onClick={() => {
+                handleLogout();
+                setIsOpen(false);
+              }}
               className="hover:text-accent transition text-left hover:cursor-pointer"
+              disabled={isLoading}
             >
               Logout
             </button>
@@ -82,6 +92,7 @@ const Navbar = () => {
             <Link
               to="/login"
               className="hover:text-accent transition hover:cursor-pointer"
+              onClick={() => setIsOpen(false)}
             >
               Login
             </Link>

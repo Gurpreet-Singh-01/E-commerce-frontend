@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { setCart } from '../store/cartSlice';
@@ -9,12 +9,14 @@ import Loader from '../components/Loader';
 import { getProductById } from '../services/productService';
 import { addToCart } from '../services/cartService';
 import { useState } from 'react';
+import useAuth from '../hooks/useAuth';
 
 const ProductDetails = () => {
+  const navigate = useNavigate()
   const { id } = useParams();
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
-
+  const {isAuthenticated} = useAuth()
   const { data, isLoading, error } = useQuery({
     queryKey: ['product', id],
     queryFn: () => getProductById(id),
@@ -34,6 +36,11 @@ const ProductDetails = () => {
   });
 
   const handleAddToCart = () => {
+        if (!isAuthenticated) {
+      toast.error('Please log in to add items to cart', { toastId: 'add-to-cart-auth' });
+      navigate('/login');
+      return;
+    }
     mutation.mutate({ productId: id, quantity });
   };
 
