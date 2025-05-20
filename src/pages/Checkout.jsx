@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { setCart } from '../store/cartSlice';
 import useAuth from '../hooks/useAuth';
@@ -167,9 +167,13 @@ const Checkout = () => {
         {cart.items.length === 0 ? (
           <div className="text-center">
             <p className="text-neutral text-lg mb-4">Your cart is empty</p>
-            <a href="/products">
-              <Button>Shop Now</Button>
-            </a>
+            
+             <Button>
+                <Link to='/products' className='block w-full h-full'>
+                Shop Now
+                </Link>
+            </Button>
+            
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row lg:items-start gap-8">

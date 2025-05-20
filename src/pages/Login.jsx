@@ -94,9 +94,9 @@ const Login = () => {
         </form>
         <p className="text-center text-sm text-neutral mt-4">
           Don't have an account?{' '}
-          <a href="/register" className="text-primary hover:underline">
+          <Link to="/register" className="text-primary hover:underline">
             Register
-          </a>
+          </Link>
         </p>
       </div>
     </div>
