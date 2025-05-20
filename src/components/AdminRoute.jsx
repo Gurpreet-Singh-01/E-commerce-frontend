@@ -3,9 +3,14 @@ import useAuth from '../hooks/useAuth';
 import Loader from './Loader';
 
 const AdminRoute = ({ children }) => {
-  const { user, isAdmin,isLoading } = useAuth();
-    if(isLoading){
-    return <Loader size="large" className="min-h-screen flex items-center justify-center"/>
+  const { user, isAdmin, isLoading } = useAuth();
+  if (isLoading) {
+    return (
+      <Loader
+        size="large"
+        className="min-h-screen flex items-center justify-center"
+      />
+    );
   }
   if (!user) {
     return <Navigate to="/login" replace />;

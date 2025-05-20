@@ -12,11 +12,11 @@ import { useState } from 'react';
 import useAuth from '../hooks/useAuth';
 
 const ProductDetails = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
-  const {isAuthenticated} = useAuth()
+  const { isAuthenticated } = useAuth();
   const { data, isLoading, error } = useQuery({
     queryKey: ['product', id],
     queryFn: () => getProductById(id),
@@ -36,8 +36,10 @@ const ProductDetails = () => {
   });
 
   const handleAddToCart = () => {
-        if (!isAuthenticated) {
-      toast.error('Please log in to add items to cart', { toastId: 'add-to-cart-auth' });
+    if (!isAuthenticated) {
+      toast.error('Please log in to add items to cart', {
+        toastId: 'add-to-cart-auth',
+      });
       navigate('/login');
       return;
     }
@@ -73,7 +75,9 @@ const ProductDetails = () => {
               <h1 className="text-3xl font-bold mb-3 font-headings text-neutral-dark">
                 {data.data.name}
               </h1>
-              <p className="text-neutral mb-4 text-sm">{data.data.description}</p>
+              <p className="text-neutral mb-4 text-sm">
+                {data.data.description}
+              </p>
               <p className="text-2xl font-bold text-primary mb-6">
                 ₹{data.data.price}
               </p>

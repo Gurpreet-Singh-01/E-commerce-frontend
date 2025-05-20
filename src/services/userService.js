@@ -24,8 +24,6 @@ export const verifyUser = async (email, otp) => {
   return response.data;
 };
 
-
-
 export const resendOTP = async (email) => {
   const response = await api.post('/user/resend_otp', { email });
   return response.data;
@@ -67,7 +65,6 @@ export const refreshAccessToken = async () => {
 
 export const logoutUser = async () => {
   await api.get('/user/logout_user');
-  
 };
 export const getUserProfile = async () => {
   const response = await api.get('/user/user');

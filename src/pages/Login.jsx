@@ -31,13 +31,15 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      toast.error('Please fix the form errors', { toastId: 'login-form-error' });
+      toast.error('Please fix the form errors', {
+        toastId: 'login-form-error',
+      });
       return;
     }
 
     setIsLoading(true);
     try {
-      const user = await loginUser( email, password );
+      const user = await loginUser(email, password);
       login(user);
       toast.success('Logged in successfully!', { toastId: 'login-success' });
       navigate('/products');

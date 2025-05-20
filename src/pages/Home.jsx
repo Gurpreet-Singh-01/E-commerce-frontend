@@ -43,7 +43,7 @@ const Home = () => {
               <p className="text-lg text-neutral">Features sleek designs</p>
               <p className="text-lg text-neutral">30W fast charging</p>
               <p className="text-lg text-neutral">Durable cables.</p>
-              <Link to="/products?category=charger">
+              <Link to="/products">
                 <Button
                   size="medium"
                   className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
@@ -70,7 +70,7 @@ const Home = () => {
               <p className="text-lg text-neutral">Showcases vibrant designs</p>
               <p className="text-lg text-neutral">Camera protection</p>
               <p className="text-lg text-neutral">Slim fit.</p>
-              <Link to="/products?category=cover">
+              <Link to="/products">
                 <Button
                   size="medium"
                   className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
@@ -97,7 +97,7 @@ const Home = () => {
               <p className="text-lg text-neutral">Offers noise cancellation</p>
               <p className="text-lg text-neutral">Deep bass</p>
               <p className="text-lg text-neutral">Sleek finish</p>
-              <Link to="/products?category=headphone/earphone">
+              <Link to="/products">
                 <Button
                   size="medium"
                   className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
@@ -124,7 +124,7 @@ const Home = () => {
               <p className="text-lg text-neutral">Features RGB lighting</p>
               <p className="text-lg text-neutral">Tactile switches</p>
               <p className="text-lg text-neutral">Minimalist design</p>
-              <Link to="/products?category=keyboard">
+              <Link to="/products">
                 <Button
                   size="medium"
                   className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
@@ -135,7 +135,7 @@ const Home = () => {
             </div>
           </div>
 
-         
+
           <div className="flex flex-col md:flex-row items-center justify-around p-10 gap-8">
             <div
               className="w-full md:w-1/2 aspect-[4/3] bg-cover bg-center"
@@ -151,7 +151,7 @@ const Home = () => {
               <p className="text-lg text-neutral">Includes RGB accents</p>
               <p className="text-lg text-neutral">Ergonomic grip</p>
               <p className="text-lg text-neutral">High-precision sensors</p>
-              <Link to="/products?category=mouse">
+              <Link to="/products">
                 <Button
                   size="medium"
                   className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"

@@ -30,7 +30,7 @@ const useAuth = () => {
         return;
       }
 
-      setIsLoading(false); 
+      setIsLoading(false);
     };
 
     checkAuth();

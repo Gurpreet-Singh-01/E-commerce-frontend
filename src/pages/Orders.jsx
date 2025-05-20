@@ -3,13 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const Orders = () => {
-  return (
-    <>
-    
-    Orders
-    
-    </>
-  )
+  return <>Orders</>;
 };
 
 export default Orders;

@@ -26,18 +26,31 @@ const Products = () => {
   const [appliedMaxPrice, setAppliedMaxPrice] = useState('');
   const [errors, setErrors] = useState({});
 
-  const { data: categoriesData, isLoading: categoriesLoading, error: categoriesError } = useQuery({
+  const {
+    data: categoriesData,
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories,
     onError: (err) => {
-      console.debug('Categories fetch error:', err.message || 'Failed to fetch categories');
-      toast.error('Failed to load categories. Please try again.', { toastId: 'categories-error' });
+      console.debug(
+        'Categories fetch error:',
+        err.message || 'Failed to fetch categories'
+      );
+      toast.error('Failed to load categories. Please try again.', {
+        toastId: 'categories-error',
+      });
     },
-    retry: (failureCount, error) => failureCount < 1 && error.response?.status !== 401,
+    retry: (failureCount, error) =>
+      failureCount < 1 && error.response?.status !== 401,
   });
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['products', { search, appliedCategory, appliedMinPrice, appliedMaxPrice }],
+    queryKey: [
+      'products',
+      { search, appliedCategory, appliedMinPrice, appliedMaxPrice },
+    ],
     queryFn: () =>
       getProducts({
         search: search.trim() || undefined,
@@ -46,8 +59,13 @@ const Products = () => {
         maxPrice: appliedMaxPrice || undefined,
       }),
     onError: (err) => {
-      console.debug('Products fetch error:', err.message || 'Failed to fetch products');
-      toast.error('Failed to load products. Please try again.', { toastId: 'products-error' });
+      console.debug(
+        'Products fetch error:',
+        err.message || 'Failed to fetch products'
+      );
+      toast.error('Failed to load products. Please try again.', {
+        toastId: 'products-error',
+      });
     },
   });
 
@@ -55,11 +73,18 @@ const Products = () => {
     mutationFn: ({ productId, quantity }) => addToCart(productId, quantity),
     onSuccess: (response) => {
       dispatch(setCart(response.cart));
-      toast.success(response.message || 'Added to cart!', { toastId: 'add-to-cart' });
+      toast.success(response.message || 'Added to cart!', {
+        toastId: 'add-to-cart',
+      });
     },
     onError: (error) => {
-      console.debug('Add to cart error:', error.message || 'Failed to add to cart');
-      toast.error(error.message || 'Failed to add to cart', { toastId: 'add-to-cart-error' });
+      console.debug(
+        'Add to cart error:',
+        error.message || 'Failed to add to cart'
+      );
+      toast.error(error.message || 'Failed to add to cart', {
+        toastId: 'add-to-cart-error',
+      });
     },
   });
 
@@ -74,7 +99,13 @@ const Products = () => {
     if (inputMaxPrice && (isNaN(max) || max < 0)) {
       newErrors.maxPrice = 'Maximum price must be a positive number';
     }
-    if (inputMinPrice && inputMaxPrice && !isNaN(min) && !isNaN(max) && min > max) {
+    if (
+      inputMinPrice &&
+      inputMaxPrice &&
+      !isNaN(min) &&
+      !isNaN(max) &&
+      min > max
+    ) {
       newErrors.range = 'Minimum price cannot be greater than maximum price';
     }
 
@@ -112,7 +143,9 @@ const Products = () => {
 
   const handleAddToCart = (productId) => {
     if (!isAuthenticated) {
-      toast.error('Please log in to add items to cart', { toastId: 'add-to-cart-auth' });
+      toast.error('Please log in to add items to cart', {
+        toastId: 'add-to-cart-auth',
+      });
       navigate('/login');
       return;
     }

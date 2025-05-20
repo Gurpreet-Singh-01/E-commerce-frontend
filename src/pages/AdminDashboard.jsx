@@ -3,13 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const AdminDashboard = () => {
-  return (
-    <>
-
-      Admin Dashboard
-
-    </>
-  )
+  return <>Admin Dashboard</>;
 };
 
 export default AdminDashboard;

@@ -30,7 +30,9 @@ api.interceptors.response.use(
     const url = originalRequest.url || '';
 
     const publicEndpoints = ['/product/', '/category/', '/login'];
-    const isPublicEndpoint = publicEndpoints.some((endpoint) => url.includes(endpoint));
+    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+      url.includes(endpoint)
+    );
 
     if (
       error.response?.status === 401 &&
@@ -62,9 +64,15 @@ api.interceptors.response.use(
         // Pass through original error for public endpoints
         throw error;
       } catch (refreshError) {
-        console.debug('Refresh failed:', refreshError.message || 'No refresh token');
+        console.debug(
+          'Refresh failed:',
+          refreshError.message || 'No refresh token'
+        );
         processQueue(refreshError);
-        if (refreshError.response?.status === 401 && refreshError.response?.data?.message.includes('Invalid refresh token')) {
+        if (
+          refreshError.response?.status === 401 &&
+          refreshError.response?.data?.message.includes('Invalid refresh token')
+        ) {
           store.dispatch(logout());
         }
         const publicPaths = ['/', '/products', '/login', '/register'];
@@ -82,7 +90,8 @@ api.interceptors.response.use(
       }
     }
 
-    const safeError = error.response?.data?.message || error.message || 'Request failed';
+    const safeError =
+      error.response?.data?.message || error.message || 'Request failed';
     return Promise.reject(new Error(safeError));
   }
 );
