@@ -15,14 +15,16 @@ const Home = () => {
           </h2>
           <h2 className="text-3xl md:text-5xl font-bold font-logo">With</h2>
           <h1 className="text-5xl md:text-7xl font-bold font-logo">TechTrendz</h1>
-          <Link to="/products">
-            <Button
-              size="large"
-              className="mt-6 border border-secondary text-secondary hover:bg-transparent hover:text-secondary active:scale-95 transition-all duration-300"
-            >
+
+          <Button
+            size="large"
+            className="mt-6 border border-secondary text-secondary hover:bg-transparent hover:text-secondary active:scale-95 transition-all duration-300"
+          >
+            <Link to="/products" className="block w-full h-full">
               Shop Now
-            </Button>
-          </Link>
+            </Link>
+          </Button>
+
         </section>
 
         {/* Product Sections */}
@@ -43,14 +45,15 @@ const Home = () => {
               <p className="text-lg text-neutral">Features sleek designs</p>
               <p className="text-lg text-neutral">30W fast charging</p>
               <p className="text-lg text-neutral">Durable cables.</p>
-              <Link to="/products">
-                <Button
-                  size="medium"
-                  className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
-                >
+
+              <Button
+                size="large"
+                className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
+              >
+                <Link to="/products" className="block w-full h-full">
                   Charge Up Now
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
 
@@ -70,14 +73,14 @@ const Home = () => {
               <p className="text-lg text-neutral">Showcases vibrant designs</p>
               <p className="text-lg text-neutral">Camera protection</p>
               <p className="text-lg text-neutral">Slim fit.</p>
-              <Link to="/products">
-                <Button
-                  size="medium"
-                  className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
-                >
+              <Button
+                size="large"
+                className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
+              >
+                <Link to="/products" className="block w-full h-full">
                   Explore Covers
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
 
@@ -97,14 +100,14 @@ const Home = () => {
               <p className="text-lg text-neutral">Offers noise cancellation</p>
               <p className="text-lg text-neutral">Deep bass</p>
               <p className="text-lg text-neutral">Sleek finish</p>
-              <Link to="/products">
-                <Button
-                  size="medium"
-                  className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
-                >
+              <Button
+                size="large"
+                className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
+              >
+                <Link to="/products" className="block w-full h-full">
                   Listen Now
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
 
@@ -124,14 +127,14 @@ const Home = () => {
               <p className="text-lg text-neutral">Features RGB lighting</p>
               <p className="text-lg text-neutral">Tactile switches</p>
               <p className="text-lg text-neutral">Minimalist design</p>
-              <Link to="/products">
-                <Button
-                  size="medium"
-                  className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
-                >
+              <Button
+                size="large"
+                className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
+              >
+                <Link to="/products" className="block w-full h-full">
                   Type in Style
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
 
@@ -151,14 +154,14 @@ const Home = () => {
               <p className="text-lg text-neutral">Includes RGB accents</p>
               <p className="text-lg text-neutral">Ergonomic grip</p>
               <p className="text-lg text-neutral">High-precision sensors</p>
-              <Link to="/products">
-                <Button
-                  size="medium"
-                  className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
-                >
+              <Button
+                size="large"
+                className="mt-6 text-neutral border border-neutral hover:text-neutral-dark hover:bg-transparent active:scale-95"
+              >
+                <Link to="/products" className="block w-full h-full">
                   Click to Discover
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
