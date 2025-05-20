@@ -49,9 +49,11 @@ const useAuth = () => {
       setIsLoggingOut(true);
       await logoutUser();
       dispatch(logout());
+      localStorage.removeItem('cartTotalQuantity');
     } catch (error) {
       console.log('Logout error:', error.message || 'Logout failed');
       dispatch(logout());
+      localStorage.removeItem('cartTotalQuantity');
     } finally {
       setIsLoggingOut(false);
       if (!window.location.pathname.includes('/login')) {
