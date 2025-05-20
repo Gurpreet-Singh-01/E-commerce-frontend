@@ -18,9 +18,14 @@ const Register = () => {
   const [formErrors, setFormErrors] = useState({});
 
   const registerMutation = useMutation({
-    mutationFn: registerUser,
+    mutationFn: ({ name, email, password, gender, phone, role }) =>
+      registerUser(name, email, password, gender, phone, role),
     onSuccess: (response) => {
-      toast.success(response.message, { toastId: 'register-success' });
+      if (response.message === 'User exists but unverified. New OTP sent.') {
+        toast.info(response.message, { toastId: 'register-unverified' });
+      } else {
+        toast.success(response.message, { toastId: 'register-success' });
+      }
       navigate('/verify-email', { state: { email: formData.email } });
     },
     onError: (error) => {
@@ -62,7 +67,6 @@ const Register = () => {
       password: formData.password,
       gender: formData.gender,
       phone: formData.phone,
-      role: 'customer',
     });
   };
 
@@ -168,14 +172,20 @@ const Register = () => {
             type="submit"
             size="large"
             className="w-full mt-4 hover:bg-primary-dark transition-colors"
-            disabled={registerMutation.isLoading}
+            disabled={registerMutation.isPending}
           >
-            {registerMutation.isLoading ? 'Registering...' : 'Register'}
+            {registerMutation.isPending ? 'Registering...' : 'Register'}
           </Button>
         </form>
         <p className="text-center text-neutral mt-4">
+          Registered but unverified?{' '}
+          <Link href="/verify-email" className="text-primary hover:underline">
+            Verify your email
+          </Link>
+        </p>
+        <p className="text-center text-neutral mt-2">
           Already have an account?{' '}
-          <Link to="/login" className="text-primary hover:underline">
+          <Link href="/login" className="text-primary hover:underline">
             Login
           </Link>
         </p>

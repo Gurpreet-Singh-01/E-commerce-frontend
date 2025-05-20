@@ -8,25 +8,39 @@ export const loginUser = async (email, password) => {
   return response.data;
 };
 
-export const registerUser = async (name, email, password, gender, role) => {
+export const registerUser = async (name, email, password, gender, phone) => {
   const response = await api.post('/user/register_user', {
     name,
     email,
     password,
     gender,
-    role,
+    phone
   });
   return response.data;
 };
 
-export const verifyUser = async (email, otp) => {
-  const response = await api.post('/user/verify_user', { email, otp });
-  return response.data;
+export const resendOTP = async (email) => {
+  try {
+   
+    const response = await api.post('/user/resend_otp', {email});
+    
+    return response.data;
+  } catch (error) {
+    console.error('Resend OTP error:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Failed to resend OTP');
+  }
 };
 
-export const resendOTP = async (email) => {
-  const response = await api.post('/user/resend_otp', { email });
-  return response.data;
+export const verifyUser = async ({ email, otp }) => {
+  try {
+    
+    const response = await api.post('/user/verify_user', { email, otp });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Verify user error:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || 'Failed to verify user');
+  }
 };
 
 export const changeCurrentPassword = async (oldPassword, newPassword) => {

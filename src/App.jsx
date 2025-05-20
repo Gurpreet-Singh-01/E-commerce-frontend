@@ -15,6 +15,7 @@ import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Checkout';
+import VerifyEmail from './pages/VerifyEmail';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route
             path="/cart"
             element={
