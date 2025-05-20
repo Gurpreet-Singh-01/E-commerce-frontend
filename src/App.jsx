@@ -14,6 +14,7 @@ import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import ProductDetails from './pages/ProductDetails';
+import Checkout from './pages/Checkout';
 
 const App = () => {
   return (
@@ -50,6 +51,17 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
+
+
           <Route
             path="/admin"
             element={
@@ -66,6 +78,8 @@ const App = () => {
               </AdminRoute>
             }
           />
+
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

@@ -27,12 +27,8 @@ export const createOrder = async (orderData) => {
       statusCode: response.data.statusCode || 201,
     };
   } catch (error) {
-    return {
-      data: {},
-      message: error.response?.data?.message || 'Failed to create order',
-      success: false,
-      statusCode: error.response?.status || 500,
-    };
+    console.log('Create order error:', error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || 'Failed to create order');
   }
 };
 
@@ -63,11 +59,7 @@ export const getUsersOrder = async () => {
       statusCode: response.data.statusCode || 200,
     };
   } catch (error) {
-    return {
-      data: [],
-      message: error.response?.data?.message || 'Failed to fetch orders',
-      success: false,
-      statusCode: error.response?.status || 500,
-    };
+    console.log('Get orders error:', error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || 'Failed to fetch orders');
   }
 };

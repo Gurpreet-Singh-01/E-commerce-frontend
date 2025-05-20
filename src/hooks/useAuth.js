@@ -50,7 +50,7 @@ const useAuth = () => {
       await logoutUser();
       dispatch(logout());
     } catch (error) {
-      console.debug('Logout error:', error.message || 'Logout failed');
+      console.log('Logout error:', error.message || 'Logout failed');
       dispatch(logout());
     } finally {
       setIsLoggingOut(false);

@@ -34,7 +34,7 @@ const Products = () => {
     queryKey: ['categories'],
     queryFn: getCategories,
     onError: (err) => {
-      console.debug(
+      console.log(
         'Categories fetch error:',
         err.message || 'Failed to fetch categories'
       );
@@ -59,7 +59,7 @@ const Products = () => {
         maxPrice: appliedMaxPrice || undefined,
       }),
     onError: (err) => {
-      console.debug(
+      console.log(
         'Products fetch error:',
         err.message || 'Failed to fetch products'
       );
@@ -78,7 +78,7 @@ const Products = () => {
       });
     },
     onError: (error) => {
-      console.debug(
+      console.log(
         'Add to cart error:',
         error.message || 'Failed to add to cart'
       );
@@ -271,6 +271,7 @@ const Products = () => {
                     price: product.price,
                     image: product.image.url,
                     category: product.category.name,
+                    stock:product.stock
                   }}
                   onAddToCart={() => handleAddToCart(product._id)}
                 />

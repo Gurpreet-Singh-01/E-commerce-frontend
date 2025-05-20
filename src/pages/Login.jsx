@@ -44,7 +44,7 @@ const Login = () => {
       toast.success('Logged in successfully!', { toastId: 'login-success' });
       navigate('/products');
     } catch (error) {
-      console.debug('Login error:', error.message);
+      console.log('Login error:', error.message);
       toast.error(error.message, { toastId: 'login-error' });
     } finally {
       setIsLoading(false);

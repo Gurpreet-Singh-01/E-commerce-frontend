@@ -20,7 +20,7 @@ const Cart = () => {
     queryFn: getCart,
     enabled: isAuthenticated && !authLoading,
     onError: (err) => {
-      console.debug('Cart fetch error:', err.message);
+      console.log('Cart fetch error:', err.message);
       toast.error(err.message, { toastId: 'cart-error' });
     },
   });
@@ -33,7 +33,7 @@ const Cart = () => {
       toast.success(response.message, { toastId: 'update-cart-success' });
     },
     onError: (error) => {
-      console.debug('Update cart error:', error.message);
+      console.log('Update cart error:', error.message);
       toast.error(error.message, { toastId: 'update-cart-error' });
     },
   });
@@ -46,7 +46,7 @@ const Cart = () => {
       toast.success(response.message, { toastId: 'remove-cart-success' });
     },
     onError: (error) => {
-      console.debug('Remove cart error:', error.message);
+      console.log('Remove cart error:', error.message);
       toast.error(error.message, { toastId: 'remove-cart-error' });
     },
   });
@@ -59,7 +59,7 @@ const Cart = () => {
       toast.success(response.message, { toastId: 'clear-cart-success' });
     },
     onError: (error) => {
-      console.debug('Clear cart error:', error.message);
+      console.log('Clear cart error:', error.message);
       toast.error(error.message, { toastId: 'clear-cart-error' });
     },
   });
@@ -179,7 +179,9 @@ const Cart = () => {
                 Total Price: ${cart.totalPrice.toFixed(2)}
               </p>
               <Button size="large" className="w-full">
+                <Link to='/checkout' className='block w-full h-full'>
                 Proceed to Checkout
+                </Link>
               </Button>
             </div>
           </div>

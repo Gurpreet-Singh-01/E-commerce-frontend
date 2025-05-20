@@ -64,7 +64,7 @@ api.interceptors.response.use(
         // Pass through original error for public endpoints
         throw error;
       } catch (refreshError) {
-        console.debug(
+        console.log(
           'Refresh failed:',
           refreshError.message || 'No refresh token'
         );
