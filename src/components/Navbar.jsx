@@ -17,6 +17,11 @@ const Navbar = () => {
     }
   };
 
+  // Wait for loading to complete before rendering navigation links
+  if (isLoading) {
+    return null; // Or render a loading spinner if desired
+  }
+
   return (
     <nav className="bg-primary text-secondary shadow-md">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">

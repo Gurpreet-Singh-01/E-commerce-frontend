@@ -58,7 +58,7 @@ export const resetPassword = async (email, otp, newPassword) => {
 export const refreshAccessToken = async () => {
   try {
     const response = await api.post('/user/refresh_access_token');
-    return response.data.data;
+    return response.data.data.user; // Return the user object directly
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to refresh token');
   }

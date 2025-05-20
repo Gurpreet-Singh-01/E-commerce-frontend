@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 const useAuth = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start as true to prevent premature rendering
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [hasTriedRefresh, setHasTriedRefresh] = useState(false);
 
@@ -21,22 +21,28 @@ const useAuth = () => {
           window.location.pathname.startsWith('/products/')
       );
 
-      if (
-        isLoggingOut ||
-        user ||
-        isAuthenticated ||
-        hasTriedRefresh ||
-        !isMounted ||
-        isPublicPage
-      ) {
+      // Skip refresh if already logging out or on a public page
+      if (isLoggingOut || !isMounted || (isPublicPage && !isAuthenticated)) {
+        setIsLoading(false);
+        return;
+      }
+
+      // If the user is already authenticated (from persisted state), no need to refresh
+      if (user && isAuthenticated) {
+        setIsLoading(false);
+        return;
+      }
+
+      // Skip if we've already tried refreshing
+      if (hasTriedRefresh) {
         setIsLoading(false);
         return;
       }
 
       try {
-        setIsLoading(true);
+        setHasTriedRefresh(true);
         console.debug('Attempting refresh token');
-        const { user: refreshedUser } = await refreshAccessToken();
+        const refreshedUser = await refreshAccessToken(); // Should return the user object directly
         console.debug('Refresh success:', refreshedUser);
         if (isMounted) {
           dispatch(updateUser({ user: refreshedUser }));
@@ -44,13 +50,19 @@ const useAuth = () => {
       } catch (error) {
         console.debug('Refresh failed:', error.message || 'No refresh token');
         // Only logout if explicitly invalid token
-        if (isMounted && error.response?.status === 401 && error.response?.data?.message.includes('Invalid refresh token')) {
+        if (
+          isMounted &&
+          error.response?.status === 401 &&
+          error.response?.data?.message.includes('Invalid refresh token')
+        ) {
           dispatch(logout());
+          if (!window.location.pathname.includes('/login')) {
+            window.location.href = '/login';
+          }
         }
       } finally {
         if (isMounted) {
           setIsLoading(false);
-          setHasTriedRefresh(true);
         }
       }
     };
@@ -60,7 +72,7 @@ const useAuth = () => {
     return () => {
       isMounted = false;
     };
-  }, [dispatch, hasTriedRefresh, isLoggingOut]);
+  }, [dispatch, user, isAuthenticated, isLoggingOut, hasTriedRefresh]);
 
   const login = (userData) => {
     dispatch(setCredentials({ user: userData }));
@@ -68,9 +80,9 @@ const useAuth = () => {
 
   const refresh = async () => {
     try {
-      const { user } = await refreshAccessToken();
-      console.debug('Manual refresh success:', user);
-      dispatch(updateUser({ user }));
+      const refreshedUser = await refreshAccessToken();
+      console.debug('Manual refresh success:', refreshedUser);
+      dispatch(updateUser({ user: refreshedUser }));
       return true;
     } catch (error) {
       console.debug('Manual refresh failed:', error.message || 'No refresh token');

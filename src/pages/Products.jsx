@@ -16,7 +16,7 @@ import useAuth from '../hooks/useAuth';
 const Products = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [search, setSearch] = useState('');
   const [inputCategory, setInputCategory] = useState('');
   const [inputMinPrice, setInputMinPrice] = useState('');
@@ -33,7 +33,6 @@ const Products = () => {
       console.debug('Categories fetch error:', err.message || 'Failed to fetch categories');
       toast.error('Failed to load categories. Please try again.', { toastId: 'categories-error' });
     },
-    // Retry once for guest users
     retry: (failureCount, error) => failureCount < 1 && error.response?.status !== 401,
   });
 
@@ -124,6 +123,11 @@ const Products = () => {
     }
     addToCartMutation.mutate({ productId, quantity: 1 });
   };
+
+  // Wait for auth loading to complete before rendering the main content
+  if (authLoading) {
+    return <Loader size="large" className="my-8" />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col font-text bg-surface">
