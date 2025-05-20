@@ -131,9 +131,17 @@ const Cart = () => {
                   />
                   <div className="flex-1">
                     <h3 className="text-lg font-medium text-neutral-dark">{item.name}</h3>
-                    <p className="text-neutral">Price: ${item.price.toFixed(2)}</p>
                     <p className="text-neutral">
-                      Subtotal: ${(item.price * item.quantity).toFixed(2)}
+                      Price: {item.price.toLocaleString('en-IN', {
+                        style: 'currency',
+                        currency: 'INR',
+                      })}
+                    </p>
+                    <p className="text-neutral">
+                      Subtotal: {(item.price * item.quantity).toLocaleString('en-IN' ,{
+                        style:'currency',
+                        currency:'INR'
+                      })}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -176,11 +184,14 @@ const Cart = () => {
                 Total Items: {cart.totalQuantity}
               </p>
               <p className="text-neutral mb-4">
-                Total Price: ${cart.totalPrice.toFixed(2)}
+                Total Price: {cart.totalPrice.toLocaleString('en-IN' ,{
+                  style:'currency',
+                  currency:'INR'
+                })}
               </p>
               <Button size="large" className="w-full">
                 <Link to='/checkout' className='block w-full h-full'>
-                Proceed to Checkout
+                  Proceed to Checkout
                 </Link>
               </Button>
             </div>

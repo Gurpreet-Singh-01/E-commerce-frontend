@@ -17,7 +17,10 @@ const ProductCard = ({ product, onAddToCart }) => {
         <h3 className="text-lg font-semibold truncate font-headings">
           {product.name}
         </h3>
-        <p className="text-neutral text-sm mt-1">₹{product.price.toFixed(2)}</p>
+        <p className="text-neutral text-sm mt-1">{product.price.toLocaleString('en-IN' ,{
+          style:'currency',
+          currency:'INR'
+        })}</p>
         <p className="text-neutral text-xs mt-1">Stock: {product.stock}</p>
         <Button
           variant="primary"
