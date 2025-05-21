@@ -356,23 +356,23 @@ const Checkout = () => {
                       {item.name} x {item.quantity}
                     </span>
                     <span className="text-neutral-dark">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ₹{(item.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 ))}
                 <div className="border-t border-neutral-light pt-2 mt-2">
                   <div className="flex justify-between mb-2">
                     <span className="text-neutral">Subtotal</span>
-                    <span className="text-neutral-dark">${cart.totalPrice.toFixed(2)}</span>
+                    <span className="text-neutral-dark">₹{cart.totalPrice.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between mb-2">
                     <span className="text-neutral">Shipping</span>
-                    <span className="text-neutral-dark">${shippingCost.toFixed(2)}</span>
+                    <span className="text-neutral-dark">₹{shippingCost.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between font-bold">
                     <span className="text-neutral-dark">Total</span>
                     <span className="text-neutral-dark">
-                      ${(cart.totalPrice + shippingCost).toFixed(2)}
+                      ₹{(cart.totalPrice + shippingCost).toFixed(2)}
                     </span>
                   </div>
                 </div>

@@ -8,7 +8,7 @@ import Cart from './pages/Cart';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import AdminRoute from './components/AdminRoute';
-import ManageOrders from './pages/ManageOrders';
+
 import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
@@ -27,7 +27,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
-          <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/products/:id/product" element={<ProductDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
@@ -76,16 +76,7 @@ const App = () => {
               </AdminRoute>
             }
           />
-          <Route
-            path="/admin/orders"
-            element={
-              <AdminRoute>
-                <ManageOrders />
-              </AdminRoute>
-            }
-          />
-
-
+    
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
