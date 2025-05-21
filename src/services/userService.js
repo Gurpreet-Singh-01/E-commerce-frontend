@@ -43,7 +43,7 @@ export const verifyUser = async ({ email, otp }) => {
   }
 };
 
-export const changeCurrentPassword = async (oldPassword, newPassword) => {
+export const changeCurrentPassword = async ({oldPassword, newPassword}) => {
   const response = await api.post('/user/change_password', {
     oldPassword,
     newPassword,
@@ -86,30 +86,13 @@ export const getUserProfile = async () => {
 };
 
 export const updateUserProfile = async (data) => {
-  const response = await api.post('/user/update_userProfile', data);
+  console.log(data)
+  const response = await api.post('/user/update_userProfile', {name: data.name, phone:data.phone});
   return response.data;
 };
 
-export const addAddress = async (
-  houseNumber,
-  street,
-  colony,
-  city,
-  state,
-  country,
-  postalCode,
-  isDefault
-) => {
-  const response = await api.post('/user/add_address', {
-    houseNumber,
-    street,
-    colony,
-    city,
-    state,
-    country,
-    postalCode,
-    isDefault,
-  });
+export const addAddress = async (data) => {
+  const response = await api.post('/user/add_address',data);
   return response.data;
 };
 
