@@ -83,7 +83,7 @@ const Profile = () => {
         postalCode: '',
         isDefault: false,
       });
-      refetch();
+      queryClient.invalidateQueries('userProfile')
     },
     onError: (error) => {
       toast.error(error.message, { toastId: 'address-add-error' });
@@ -107,7 +107,7 @@ const Profile = () => {
         postalCode: '',
         isDefault: false,
       });
-      refetch();
+      queryClient.invalidateQueries('userProfile')
     },
     onError: (error) => {
       toast.error(error.message, { toastId: 'address-update-error' });
@@ -120,7 +120,7 @@ const Profile = () => {
     mutationFn:  deleteAddress,
     onSuccess: (response) => {
       toast.success(response.message, { toastId: 'address-delete-success' });
-      refetch();
+      queryClient.invalidateQueries('userProfile')
     },
     onError: (error) => {
       toast.error(error.message, { toastId: 'address-delete-error' });
@@ -192,6 +192,7 @@ const Profile = () => {
     if (!validateAddressForm() || isSubmitting) return;
     setIsSubmitting(true);
     if (editingAddressId) {
+      console.log('editing address id', editingAddressId)
       updateAddressMutation.mutate({ id: editingAddressId, data: addressForm });
     } else {
       addAddressMutation.mutate(addressForm);
@@ -317,9 +318,9 @@ const Profile = () => {
         {/* Addresses Section */}
         <div className="bg-surface p-6 rounded-lg shadow-sm mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-neutral-dark">Addresses</h2>
-          {data?.addresses?.length > 0 ? (
+          {data?.address?.length > 0 ? (
             <div className="space-y-4">
-              {data.addresses.map((address) => (
+              {data.address.map((address) => (
                 <div
                   key={address._id}
                   className="border border-neutral-light p-4 rounded-md flex justify-between items-start"

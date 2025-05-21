@@ -86,7 +86,6 @@ export const getUserProfile = async () => {
 };
 
 export const updateUserProfile = async (data) => {
-  console.log(data)
   const response = await api.post('/user/update_userProfile', {name: data.name, phone:data.phone});
   return response.data;
 };
@@ -96,7 +95,9 @@ export const addAddress = async (data) => {
   return response.data;
 };
 
-export const updateAddress = async (id, data) => {
+export const updateAddress = async ({id,data}) => {
+  console.log('ID: ',id)
+  console.log('data ',data)
   const response = await api.patch(`/user/update_address/${id}`, data);
   return response.data;
 };
