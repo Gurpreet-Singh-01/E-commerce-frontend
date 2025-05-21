@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { updateUser, logout } from '../store/authSlice';
-import { logoutUser, refreshAccessToken } from './userService';
+import { refreshAccessToken } from './userService';
 import { store } from '../store/index';
 
 let isRefreshing = false;
@@ -53,24 +53,25 @@ api.interceptors.response.use(
 
       try {
         console.log('Refreshing token...');
-        const { user } = await refreshAccessToken();
+        const user = await refreshAccessToken();
+        if (!user || !user._id) {
+          throw new Error('Invalid user data after token refresh');
+        }
         store.dispatch(updateUser({ user }));
         processQueue(null);
         return api(originalRequest);
       } catch (refreshError) {
         console.log('Refresh failed:', refreshError.message);
         processQueue(refreshError);
-        if (refreshError.response?.status === 401) {
-          store.dispatch(logout());
-          const publicPaths = ['/', '/products', '/login', '/register'];
-          const isPublicPage = publicPaths.some(
-            (path) =>
-              window.location.pathname === path ||
-              window.location.pathname.startsWith('/products/')
-          );
-          if (!isPublicPage && !window.location.pathname.includes('/login')) {
-            window.location.href = '/login';
-          }
+        store.dispatch(logout());
+        const publicPaths = ['/', '/products', '/login', '/register'];
+        const isPublicPage = publicPaths.some(
+          (path) =>
+            window.location.pathname === path ||
+            window.location.pathname.startsWith('/products/')
+        );
+        if (!isPublicPage && !window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
         }
         return Promise.reject(refreshError);
       } finally {

@@ -25,10 +25,14 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, action) => {
+      const userData = action.payload.user;
       state.user = {
-        _id: action.payload.user._id,
-        email: action.payload.user.email,
-        role: action.payload.user.role,
+        _id: userData._id,
+        email: userData.email,
+        role: userData.role || 'user',
+        name: userData.name,
+        phone: userData.phone,
+        address: userData.address,
       };
       state.isAuthenticated = true;
       try {
@@ -38,10 +42,14 @@ const authSlice = createSlice({
       }
     },
     updateUser: (state, action) => {
+      const userData = action.payload.user;
       state.user = {
-        _id: action.payload.user._id,
-        email: action.payload.user.email,
-        role: action.payload.user.role,
+        _id: userData._id,
+        email: userData.email,
+        role: userData.role || 'user',
+        name: userData.name,
+        phone: userData.phone,
+        address: userData.address,
       };
       state.isAuthenticated = true;
       try {

@@ -64,15 +64,21 @@ export const resetPassword = async ({email, otp, newPassword}) => {
   });
   return response.data;
 };
+
 export const refreshAccessToken = async () => {
   try {
     const response = await api.post('/user/refresh_access_token');
     const user = response.data?.data?.user;
     if (!user || !user._id || !user.role) {
-      throw new Error('Invalid user data in refresh response');
+      const profileResponse = await getUserProfile();
+      if (!profileResponse.success || !profileResponse.data) {
+        throw new Error('Failed to fetch user profile after token refresh');
+      }
+      return profileResponse.data;
     }
     return user;
   } catch (error) {
+    console.error('Refresh token error:', error.response?.data || error.message);
     throw new Error(error.response?.data?.message || 'Failed to refresh token');
   }
 };
