@@ -6,12 +6,12 @@ import { store } from '../store/index';
 let isRefreshing = false;
 let failedQueue = [];
 
-const processQueue = (error, user = null) => {
+const processQueue = (error) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
-      prom.resolve(user);
+      prom.resolve();
     }
   });
   failedQueue = [];
@@ -27,7 +27,7 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    const url = originalRequest.url || '';
+    const url = originalRequest?.url || '';
 
     const publicEndpoints = ['/product/', '/category/', '/login'];
     const isPublicEndpoint = publicEndpoints.some((endpoint) =>
@@ -46,43 +46,31 @@ api.interceptors.response.use(
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then((user) => {
-            return api(originalRequest);
-          })
+          .then(() => api(originalRequest))
           .catch((err) => Promise.reject(err));
       }
       isRefreshing = true;
 
       try {
-        const authState = localStorage.getItem('authState');
-        if (authState && JSON.parse(authState).isAuthenticated) {
-          const { user } = await refreshAccessToken();
-          store.dispatch(updateUser({ user }));
-          processQueue(null, user);
-          return api(originalRequest);
-        }
-        // Pass through original error for public endpoints
-        throw error;
+        console.log('Refreshing token...');
+        const { user } = await refreshAccessToken();
+        store.dispatch(updateUser({ user }));
+        processQueue(null);
+        return api(originalRequest);
       } catch (refreshError) {
-        console.log(
-          'Refresh failed:',
-          refreshError.message || 'No refresh token'
-        );
+        console.log('Refresh failed:', refreshError.message);
         processQueue(refreshError);
-        if (
-          refreshError.response?.status === 401 &&
-          refreshError.response?.data?.message.includes('Invalid refresh token')
-        ) {
+        if (refreshError.response?.status === 401) {
           store.dispatch(logout());
-        }
-        const publicPaths = ['/', '/products', '/login', '/register'];
-        const isPublicPage = publicPaths.some(
-          (path) =>
-            window.location.pathname === path ||
-            window.location.pathname.startsWith('/products/')
-        );
-        if (!isPublicPage && !window.location.pathname.includes('/login')) {
-          window.location.href = '/login';
+          const publicPaths = ['/', '/products', '/login', '/register'];
+          const isPublicPage = publicPaths.some(
+            (path) =>
+              window.location.pathname === path ||
+              window.location.pathname.startsWith('/products/')
+          );
+          if (!isPublicPage && !window.location.pathname.includes('/login')) {
+            window.location.href = '/login';
+          }
         }
         return Promise.reject(refreshError);
       } finally {

@@ -88,13 +88,20 @@ const Login = () => {
               <p className="text-error text-sm mt-1">{errors.password}</p>
             )}
           </div>
-          <Button type="submit" size="large" disabled={isLoading}>
+          <Button type="submit" size="large" disabled={isLoading} className="w-full mt-4 hover:bg-primary-dark transition-colors">
             {isLoading ? 'Logging in...' : 'Login'}
           </Button>
         </form>
         <p className="text-center text-sm text-neutral mt-4">
+
+          <Link to="/forgot-password" className="text-primary underline">
+            Forgot Password?
+          </Link>
+        </p>
+
+        <p className="text-center text-sm text-neutral mt-4">
           Don't have an account?{' '}
-          <Link to="/register" className="text-primary hover:underline">
+          <Link to="/register" className="text-primary underline">
             Register
           </Link>
         </p>

@@ -179,13 +179,13 @@ const Register = () => {
         </form>
         <p className="text-center text-neutral mt-4">
           Registered but unverified?{' '}
-          <Link href="/verify-email" className="text-primary hover:underline">
+          <Link to="/verify-email" className="text-primary hover:underline">
             Verify your email
           </Link>
         </p>
         <p className="text-center text-neutral mt-2">
           Already have an account?{' '}
-          <Link href="/login" className="text-primary hover:underline">
+          <Link to="/login" className="text-primary hover:underline">
             Login
           </Link>
         </p>
