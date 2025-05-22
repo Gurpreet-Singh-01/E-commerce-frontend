@@ -58,7 +58,7 @@ export const addToCart = async (productId, quantity = 1) => {
       'Add to cart error:',
       error.response?.data?.message || error.message
     );
-    throw new Error(error.response?.data?.message || 'Failed to add to cart');
+    throw new Error(error.message || 'Failed to add to cart');
   }
 };
 
@@ -73,10 +73,9 @@ export const updateCartItem = async (productId, quantity) => {
     };
   } catch (error) {
     console.log(
-      'Update cart error:',
-      error.response?.data?.message || error.message
+      'Update cart error:',error.message
     );
-    throw new Error(error.response?.data?.message || 'Failed to update cart');
+    throw new Error(error.message || 'Failed to update cart');
   }
 };
 
@@ -112,6 +111,6 @@ export const clearCart = async () => {
       'Clear cart error:',
       error.response?.data?.message || error.message
     );
-    throw new Error(error.response?.data?.message || 'Failed to clear cart');
+    throw new Error(error.message || 'Failed to clear cart');
   }
 };
