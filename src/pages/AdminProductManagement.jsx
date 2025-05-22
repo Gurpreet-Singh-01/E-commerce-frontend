@@ -432,7 +432,7 @@ const AdminProductManagement = () => {
                 }
               >
                 {createCategoryMutation.isLoading ||
-                updateCategoryMutation.isLoading ? (
+                  updateCategoryMutation.isLoading ? (
                   <FaSpinner className="animate-spin inline mr-2" />
                 ) : (
                   'Save'
@@ -487,7 +487,7 @@ const AdminProductManagement = () => {
                 }
               >
                 {createProductMutation.isLoading ||
-                updateProductMutation.isLoading ? (
+                  updateProductMutation.isLoading ? (
                   <FaSpinner className="animate-spin inline mr-2" />
                 ) : (
                   'Save'
@@ -642,7 +642,7 @@ const AdminProductManagement = () => {
                 }
               >
                 {deleteCategoryMutation.isLoading ||
-                deleteProductMutation.isLoading ? (
+                  deleteProductMutation.isLoading ? (
                   <FaSpinner className="animate-spin inline mr-2" />
                 ) : (
                   'Yes'

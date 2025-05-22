@@ -98,17 +98,7 @@ const Orders = () => {
                 >
                   Status: {order.status}
                 </p>
-                {user?.role === 'admin' && (
-                  <div className="mt-4">
-                    <Button
-                      variant="secondary"
-                      size="medium"
-                      onClick={() => navigate(`/orders/${order.id}`)}
-                    >
-                      View Details
-                    </Button>
-                  </div>
-                )}
+                
               </div>
             ))}
           </div>
