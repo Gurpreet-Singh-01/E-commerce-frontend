@@ -14,9 +14,8 @@ export const createProduct = async (data) => {
   try {
     const response = await api.post('/product/', data);
     return response.data;
-    
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 

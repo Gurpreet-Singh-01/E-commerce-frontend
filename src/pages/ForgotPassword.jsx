@@ -52,7 +52,12 @@ const ForgotPassword = () => {
         <h1 className="text-2xl font-bold text-center mb-6 font-headings text-neutral-dark">
           Forgot Password
         </h1>
-        <form onSubmit={handleSubmit} method="POST" action="#" className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          method="POST"
+          action="#"
+          className="space-y-4"
+        >
           <div>
             <label className="block text-sm font-medium text-neutral-dark mb-1">
               Email
@@ -68,7 +73,9 @@ const ForgotPassword = () => {
               }`}
               disabled={isSubmitting}
             />
-            {formErrors.email && <p className="text-error text-sm mt-1">{formErrors.email}</p>}
+            {formErrors.email && (
+              <p className="text-error text-sm mt-1">{formErrors.email}</p>
+            )}
           </div>
           <Button
             type="submit"

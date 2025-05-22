@@ -4,7 +4,12 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { setCart } from '../store/cartSlice';
 import useAuth from '../hooks/useAuth';
-import { getCart, updateCartItem, removeFromCart, clearCart } from '../services/cartService';
+import {
+  getCart,
+  updateCartItem,
+  removeFromCart,
+  clearCart,
+} from '../services/cartService';
 import Loader from '../components/Loader';
 import Button from '../components/Button';
 import Input from '../components/Input';
@@ -26,7 +31,8 @@ const Cart = () => {
   });
 
   const updateCartMutation = useMutation({
-    mutationFn: ({ productId, quantity }) => updateCartItem(productId, quantity),
+    mutationFn: ({ productId, quantity }) =>
+      updateCartItem(productId, quantity),
     onSuccess: (response) => {
       dispatch(setCart(response.cart));
       queryClient.invalidateQueries(['cart']);
@@ -82,7 +88,9 @@ const Cart = () => {
   }
 
   if (!isAuthenticated) {
-    toast.error('Please log in to view your cart', { toastId: 'cart-auth-error' });
+    toast.error('Please log in to view your cart', {
+      toastId: 'cart-auth-error',
+    });
     navigate('/login');
     return null;
   }
@@ -130,17 +138,21 @@ const Cart = () => {
                     className="w-20 h-20 object-cover rounded mr-4"
                   />
                   <div className="flex-1">
-                    <h3 className="text-lg font-medium text-neutral-dark">{item.name}</h3>
+                    <h3 className="text-lg font-medium text-neutral-dark">
+                      {item.name}
+                    </h3>
                     <p className="text-neutral">
-                      Price: {item.price.toLocaleString('en-IN', {
+                      Price:{' '}
+                      {item.price.toLocaleString('en-IN', {
                         style: 'currency',
                         currency: 'INR',
                       })}
                     </p>
                     <p className="text-neutral">
-                      Subtotal: {(item.price * item.quantity).toLocaleString('en-IN' ,{
-                        style:'currency',
-                        currency:'INR'
+                      Subtotal:{' '}
+                      {(item.price * item.quantity).toLocaleString('en-IN', {
+                        style: 'currency',
+                        currency: 'INR',
                       })}
                     </p>
                   </div>
@@ -184,13 +196,14 @@ const Cart = () => {
                 Total Items: {cart.totalQuantity}
               </p>
               <p className="text-neutral mb-4">
-                Total Price: {cart.totalPrice.toLocaleString('en-IN' ,{
-                  style:'currency',
-                  currency:'INR'
+                Total Price:{' '}
+                {cart.totalPrice.toLocaleString('en-IN', {
+                  style: 'currency',
+                  currency: 'INR',
                 })}
               </p>
               <Button size="large" className="w-full">
-                <Link to='/checkout' className='block w-full h-full'>
+                <Link to="/checkout" className="block w-full h-full">
                   Proceed to Checkout
                 </Link>
               </Button>

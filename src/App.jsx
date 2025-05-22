@@ -68,7 +68,6 @@ const App = () => {
             }
           />
 
-
           <Route
             path="/admin"
             element={
@@ -86,7 +85,7 @@ const App = () => {
               </AdminRoute>
             }
           />
-    
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

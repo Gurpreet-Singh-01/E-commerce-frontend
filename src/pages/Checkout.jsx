@@ -38,7 +38,11 @@ const Checkout = () => {
   const [formErrors, setFormErrors] = useState({});
 
   // Fetch cart
-  const { data: cartData, isLoading: cartLoading, error: cartError } = useQuery({
+  const {
+    data: cartData,
+    isLoading: cartLoading,
+    error: cartError,
+  } = useQuery({
     queryKey: ['cart'],
     queryFn: getCart,
     enabled: isAuthenticated && !authLoading,
@@ -54,7 +58,9 @@ const Checkout = () => {
     queryFn: getUserProfile,
     enabled: isAuthenticated && !authLoading,
     onSuccess: (response) => {
-      const defaultAddress = response.data.address?.find((addr) => addr.isDefault);
+      const defaultAddress = response.data.address?.find(
+        (addr) => addr.isDefault
+      );
       if (defaultAddress) {
         setSelectedAddressId(defaultAddress._id);
       } else if (response.data.address?.length > 0) {
@@ -63,7 +69,9 @@ const Checkout = () => {
     },
     onError: (err) => {
       console.debug('User profile fetch error:', err.message);
-      toast.error('Failed to fetch addresses', { toastId: 'user-profile-error' });
+      toast.error('Failed to fetch addresses', {
+        toastId: 'user-profile-error',
+      });
     },
   });
 
@@ -95,15 +103,26 @@ const Checkout = () => {
   // Form validation
   const validateForm = () => {
     if (!useNewAddress && !selectedAddressId) {
-      toast.error('Please select an address or enter a new one', { toastId: 'address-error' });
+      toast.error('Please select an address or enter a new one', {
+        toastId: 'address-error',
+      });
       return false;
     }
     if (useNewAddress) {
       const errors = {};
-      const fields = ['houseNumber', 'street', 'colony', 'city', 'state', 'country', 'postalCode'];
+      const fields = [
+        'houseNumber',
+        'street',
+        'colony',
+        'city',
+        'state',
+        'country',
+        'postalCode',
+      ];
       fields.forEach((field) => {
         if (!formData[field].trim()) {
-          errors[field] = `${field.replace(/([A-Z])/g, ' $1').trim()} is required`;
+          errors[field] =
+            `${field.replace(/([A-Z])/g, ' $1').trim()} is required`;
         }
       });
       if (formData.postalCode && !/^\d{5,10}$/.test(formData.postalCode)) {
@@ -122,7 +141,9 @@ const Checkout = () => {
 
     const orderData = {
       paymentMethod: 'cod', // Only COD sent to backend
-      ...(useNewAddress ? { shippingAddress: formData } : { addressId: selectedAddressId }),
+      ...(useNewAddress
+        ? { shippingAddress: formData }
+        : { addressId: selectedAddressId }),
     };
     placeOrderMutation.mutate(orderData);
   };
@@ -167,16 +188,18 @@ const Checkout = () => {
         {cart.items.length === 0 ? (
           <div className="text-center">
             <p className="text-neutral text-lg mb-4">Your cart is empty</p>
-            
-             <Button>
-                <Link to='/products' className='block w-full h-full'>
+
+            <Button>
+              <Link to="/products" className="block w-full h-full">
                 Shop Now
-                </Link>
+              </Link>
             </Button>
-            
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row lg:items-start gap-8">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col lg:flex-row lg:items-start gap-8"
+          >
             {/* Address Section */}
             <div className="flex-1">
               <h2 className="text-xl font-bold mb-4 font-headings text-neutral-dark">
@@ -251,11 +274,14 @@ const Checkout = () => {
                           <p className="text-neutral-dark font-medium">
                             {addr.houseNumber}, {addr.street}, {addr.colony}
                             {addr.isDefault && (
-                              <span className="text-success ml-2">(Default)</span>
+                              <span className="text-success ml-2">
+                                (Default)
+                              </span>
                             )}
                           </p>
                           <p className="text-neutral">
-                            {addr.city}, {addr.state}, {addr.country} {addr.postalCode}
+                            {addr.city}, {addr.state}, {addr.country}{' '}
+                            {addr.postalCode}
                           </p>
                         </div>
                       </label>
@@ -289,7 +315,9 @@ const Checkout = () => {
                           }`}
                         />
                         {formErrors[name] && (
-                          <p className="text-error text-sm mt-1">{formErrors[name]}</p>
+                          <p className="text-error text-sm mt-1">
+                            {formErrors[name]}
+                          </p>
                         )}
                       </div>
                     ))}
@@ -314,7 +342,9 @@ const Checkout = () => {
                       />
                       <span
                         className={`absolute inset-0 border-2 border-neutral-light rounded-full transition-all duration-200 ${
-                          paymentMethod === 'cod' ? 'border-primary' : 'bg-white'
+                          paymentMethod === 'cod'
+                            ? 'border-primary'
+                            : 'bg-white'
                         }`}
                       >
                         {paymentMethod === 'cod' && (
@@ -322,7 +352,9 @@ const Checkout = () => {
                         )}
                       </span>
                     </span>
-                    <span className="text-neutral-dark">Cash on Delivery (COD)</span>
+                    <span className="text-neutral-dark">
+                      Cash on Delivery (COD)
+                    </span>
                   </label>
                   <label className="flex items-center gap-3 cursor-not-allowed opacity-50 relative group">
                     <span className="relative inline-block w-5 h-5">
@@ -363,11 +395,15 @@ const Checkout = () => {
                 <div className="border-t border-neutral-light pt-2 mt-2">
                   <div className="flex justify-between mb-2">
                     <span className="text-neutral">Subtotal</span>
-                    <span className="text-neutral-dark">₹{cart.totalPrice.toFixed(2)}</span>
+                    <span className="text-neutral-dark">
+                      ₹{cart.totalPrice.toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between mb-2">
                     <span className="text-neutral">Shipping</span>
-                    <span className="text-neutral-dark">₹{shippingCost.toFixed(2)}</span>
+                    <span className="text-neutral-dark">
+                      ₹{shippingCost.toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between font-bold">
                     <span className="text-neutral-dark">Total</span>
@@ -382,7 +418,9 @@ const Checkout = () => {
                   className="w-full mt-4 hover:bg-primary-dark transition-colors"
                   disabled={placeOrderMutation.isLoading}
                 >
-                  {placeOrderMutation.isLoading ? 'Placing Order...' : 'Place Order'}
+                  {placeOrderMutation.isLoading
+                    ? 'Placing Order...'
+                    : 'Place Order'}
                 </Button>
               </div>
             </div>

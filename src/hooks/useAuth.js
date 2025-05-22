@@ -15,7 +15,15 @@ const useAuth = () => {
     let isMounted = true;
 
     const checkAuth = async () => {
-      const publicPaths = ['/', '/products', '/login', '/register', '/verify-email', '/forgot-password', '/reset-password'];
+      const publicPaths = [
+        '/',
+        '/products',
+        '/login',
+        '/register',
+        '/verify-email',
+        '/forgot-password',
+        '/reset-password',
+      ];
       const isPublicPage = publicPaths.some(
         (path) =>
           window.location.pathname === path ||
@@ -84,7 +92,10 @@ const useAuth = () => {
   useEffect(() => {
     if (user && isAuthenticated && !isLoading && !isLoggingOut) {
       try {
-        localStorage.setItem('authState', JSON.stringify({ user, isAuthenticated }));
+        localStorage.setItem(
+          'authState',
+          JSON.stringify({ user, isAuthenticated })
+        );
       } catch (error) {
         console.log('Failed to save authState to localStorage:', error.message);
       }

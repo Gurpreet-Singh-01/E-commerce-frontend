@@ -6,7 +6,7 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      modalRef.current?.focus(); 
+      modalRef.current?.focus();
     } else {
       document.body.style.overflow = 'auto';
     }
@@ -50,9 +50,7 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md' }) => {
             ✕
           </button>
         </div>
-        <div className="p-4 overflow-y-auto flex-1">
-          {children}
-        </div>
+        <div className="p-4 overflow-y-auto flex-1">{children}</div>
         {footer && (
           <div className="p-4 border-t border-neutral-light flex justify-end space-x-2">
             {footer}

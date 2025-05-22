@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-
 const loadTotalQuantityFromStorage = () => {
   try {
     const totalQuantity = localStorage.getItem('cartTotalQuantity');
@@ -13,7 +12,7 @@ const loadTotalQuantityFromStorage = () => {
 
 const initialState = {
   items: [],
-  totalQuantity: loadTotalQuantityFromStorage(), 
+  totalQuantity: loadTotalQuantityFromStorage(),
   totalPrice: 0,
 };
 
@@ -33,7 +32,7 @@ const cartSlice = createSlice({
       state.items = action.payload.items;
       state.totalQuantity = action.payload.totalQuantity;
       state.totalPrice = action.payload.totalPrice;
-      saveTotalQuantityToStorage(state.totalQuantity); 
+      saveTotalQuantityToStorage(state.totalQuantity);
     },
     addToCart: (state, action) => {
       const item = action.payload;
@@ -45,7 +44,7 @@ const cartSlice = createSlice({
       }
       state.totalQuantity += item.quantity || 1;
       state.totalPrice += item.price * (item.quantity || 1);
-      saveTotalQuantityToStorage(state.totalQuantity); 
+      saveTotalQuantityToStorage(state.totalQuantity);
     },
     updateCartItem: (state, action) => {
       const { id, quantity } = action.payload;
@@ -54,7 +53,7 @@ const cartSlice = createSlice({
         state.totalQuantity += quantity - item.quantity;
         state.totalPrice += (quantity - item.quantity) * item.price;
         item.quantity = quantity;
-        saveTotalQuantityToStorage(state.totalQuantity); 
+        saveTotalQuantityToStorage(state.totalQuantity);
       }
     },
     removeFromCart: (state, action) => {
@@ -64,14 +63,14 @@ const cartSlice = createSlice({
         state.totalQuantity -= item.quantity;
         state.totalPrice -= item.quantity * item.price;
         state.items = state.items.filter((item) => item.id !== id);
-        saveTotalQuantityToStorage(state.totalQuantity); 
+        saveTotalQuantityToStorage(state.totalQuantity);
       }
     },
     clearCart: (state) => {
       state.items = [];
       state.totalQuantity = 0;
       state.totalPrice = 0;
-      saveTotalQuantityToStorage(state.totalQuantity); 
+      saveTotalQuantityToStorage(state.totalQuantity);
     },
   },
 });

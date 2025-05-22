@@ -271,7 +271,7 @@ const Products = () => {
                     price: product.price,
                     image: product.image.url,
                     category: product.category.name,
-                    stock:product.stock
+                    stock: product.stock,
                   }}
                   onAddToCart={() => handleAddToCart(product._id)}
                 />

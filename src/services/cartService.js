@@ -1,16 +1,16 @@
 import api from './api';
 
 const normalizeCartData = (data) => {
-
   const cartData = Array.isArray(data) ? { items: [] } : data || { items: [] };
   return {
-    items: cartData.items?.map((item) => ({
-      id: item.product._id,
-      name: item.product.name,
-      price: item.product.price,
-      quantity: item.quantity,
-      image: item.product.image.url,
-    })) || [],
+    items:
+      cartData.items?.map((item) => ({
+        id: item.product._id,
+        name: item.product.name,
+        price: item.product.price,
+        quantity: item.quantity,
+        image: item.product.image.url,
+      })) || [],
     totalQuantity:
       cartData.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
     totalPrice:
@@ -31,7 +31,10 @@ export const getCart = async () => {
       statusCode: response.data.statusCode || 200,
     };
   } catch (error) {
-    console.log('Get cart error:', error.response?.data?.message || error.message);
+    console.log(
+      'Get cart error:',
+      error.response?.data?.message || error.message
+    );
     return {
       cart: { items: [], totalQuantity: 0, totalPrice: 0 },
       message: error.response?.data?.message || 'Failed to fetch cart',
@@ -51,7 +54,10 @@ export const addToCart = async (productId, quantity = 1) => {
       statusCode: response.data.statusCode || 200,
     };
   } catch (error) {
-    console.log('Add to cart error:', error.response?.data?.message || error.message);
+    console.log(
+      'Add to cart error:',
+      error.response?.data?.message || error.message
+    );
     throw new Error(error.response?.data?.message || 'Failed to add to cart');
   }
 };
@@ -66,7 +72,10 @@ export const updateCartItem = async (productId, quantity) => {
       statusCode: response.data.statusCode || 200,
     };
   } catch (error) {
-    console.log('Update cart error:', error.response?.data?.message || error.message);
+    console.log(
+      'Update cart error:',
+      error.response?.data?.message || error.message
+    );
     throw new Error(error.response?.data?.message || 'Failed to update cart');
   }
 };
@@ -81,7 +90,10 @@ export const removeFromCart = async (productId) => {
       statusCode: response.data.statusCode || 200,
     };
   } catch (error) {
-    console.log('Remove from cart error:', error.response?.data?.message || error.message);
+    console.log(
+      'Remove from cart error:',
+      error.response?.data?.message || error.message
+    );
     throw new Error(error.response?.data?.message || 'Failed to remove item');
   }
 };
@@ -96,7 +108,10 @@ export const clearCart = async () => {
       statusCode: response.data.statusCode || 200,
     };
   } catch (error) {
-    console.log('Clear cart error:', error.response?.data?.message || error.message);
+    console.log(
+      'Clear cart error:',
+      error.response?.data?.message || error.message
+    );
     throw new Error(error.response?.data?.message || 'Failed to clear cart');
   }
 };

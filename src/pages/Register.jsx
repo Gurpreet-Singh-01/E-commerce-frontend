@@ -97,7 +97,9 @@ const Register = () => {
                 formErrors.name ? 'border-error' : ''
               }`}
             />
-            {formErrors.name && <p className="text-error text-sm mt-1">{formErrors.name}</p>}
+            {formErrors.name && (
+              <p className="text-error text-sm mt-1">{formErrors.name}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-neutral-dark mb-1">
@@ -113,7 +115,9 @@ const Register = () => {
                 formErrors.email ? 'border-error' : ''
               }`}
             />
-            {formErrors.email && <p className="text-error text-sm mt-1">{formErrors.email}</p>}
+            {formErrors.email && (
+              <p className="text-error text-sm mt-1">{formErrors.email}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-neutral-dark mb-1">
@@ -150,7 +154,9 @@ const Register = () => {
               <option value="female">Female</option>
               <option value="other">Other</option>
             </select>
-            {formErrors.gender && <p className="text-error text-sm mt-1">{formErrors.gender}</p>}
+            {formErrors.gender && (
+              <p className="text-error text-sm mt-1">{formErrors.gender}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-neutral-dark mb-1">
@@ -166,7 +172,9 @@ const Register = () => {
                 formErrors.phone ? 'border-error' : ''
               }`}
             />
-            {formErrors.phone && <p className="text-error text-sm mt-1">{formErrors.phone}</p>}
+            {formErrors.phone && (
+              <p className="text-error text-sm mt-1">{formErrors.phone}</p>
+            )}
           </div>
           <Button
             type="submit"

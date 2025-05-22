@@ -20,7 +20,10 @@ const AdminDashboard = () => {
   const { isAdmin, isLoading: authLoading } = useAuth();
   const queryClient = useQueryClient();
   const [orderFilters, setOrderFilters] = useState({ status: '', method: '' });
-  const [allOrderFilters, setAllOrderFilters] = useState({ status: '', method: '' });
+  const [allOrderFilters, setAllOrderFilters] = useState({
+    status: '',
+    method: '',
+  });
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [cancelOrderId, setCancelOrderId] = useState(null);
 
@@ -75,7 +78,9 @@ const AdminDashboard = () => {
       toast.success('Order status updated', { theme: 'light' });
     },
     onError: (error) => {
-      toast.error(error.message || 'Failed to update status', { theme: 'light' });
+      toast.error(error.message || 'Failed to update status', {
+        theme: 'light',
+      });
     },
   });
 
@@ -89,7 +94,9 @@ const AdminDashboard = () => {
       setCancelOrderId(null);
     },
     onError: (error) => {
-      toast.error(error.message || 'Failed to cancel order', { theme: 'light' });
+      toast.error(error.message || 'Failed to cancel order', {
+        theme: 'light',
+      });
     },
   });
 
@@ -129,63 +136,92 @@ const AdminDashboard = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-background font-logo">
       <div className="container py-8">
-        <h1 className="text-3xl font-bold text-neutral-dark mb-8 font-headings">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold text-neutral-dark mb-8 font-headings">
+          Admin Dashboard
+        </h1>
 
         {/* Dashboard Stats */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-neutral-dark mb-4 font-headings">Overview</h2>
+          <h2 className="text-2xl font-semibold text-neutral-dark mb-4 font-headings">
+            Overview
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { label: 'Total Orders', value: statsData?.totalOrders || 0 },
-              { label: 'Total Customers', value: statsData?.totalCustomers || 0 },
+              {
+                label: 'Total Customers',
+                value: statsData?.totalCustomers || 0,
+              },
               { label: 'Total Products', value: statsData?.totalProducts || 0 },
-              { label: 'Total Revenue', value: `₹${statsData?.totalRevenue || 0}` },
+              {
+                label: 'Total Revenue',
+                value: `₹${statsData?.totalRevenue || 0}`,
+              },
             ].map((stat, index) => (
               <div
                 key={index}
                 className="bg-surface p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
-                <h3 className="text-lg font-medium text-neutral-dark font-text">{stat.label}</h3>
+                <h3 className="text-lg font-medium text-neutral-dark font-text">
+                  {stat.label}
+                </h3>
                 <p className="text-2xl font-bold text-accent font-text">
-                  {statsLoading ? <FaSpinner className="animate-spin inline mr-2" /> : stat.value}
+                  {statsLoading ? (
+                    <FaSpinner className="animate-spin inline mr-2" />
+                  ) : (
+                    stat.value
+                  )}
                 </p>
               </div>
             ))}
           </div>
           <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-surface p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-medium text-neutral-dark mb-4 font-headings">Orders by Status</h3>
+              <h3 className="text-lg font-medium text-neutral-dark mb-4 font-headings">
+                Orders by Status
+              </h3>
               <ul className="space-y-3 text-neutral-dark font-text">
                 {statsLoading ? (
                   <li className="text-center">Loading...</li>
                 ) : Object.keys(statsData?.ordersByStatus || {}).length ? (
-                  Object.entries(statsData?.ordersByStatus).map(([status, count]) => (
-                    <li key={status} className="flex justify-between items-center">
-                      <span className="capitalize">{status}</span>
-                      <span className="text-accent font-medium">{count}</span>
-                    </li>
-                  ))
+                  Object.entries(statsData?.ordersByStatus).map(
+                    ([status, count]) => (
+                      <li
+                        key={status}
+                        className="flex justify-between items-center"
+                      >
+                        <span className="capitalize">{status}</span>
+                        <span className="text-accent font-medium">{count}</span>
+                      </li>
+                    )
+                  )
                 ) : (
                   <li className="text-center">No data available</li>
                 )}
               </ul>
             </div>
             <div className="bg-surface p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-medium text-neutral-dark mb-4 font-headings">Orders by Method</h3>
+              <h3 className="text-lg font-medium text-neutral-dark mb-4 font-headings">
+                Orders by Method
+              </h3>
               <ul className="space-y-3 text-neutral-dark font-text">
                 {statsLoading ? (
                   <li className="text-center">Loading...</li>
                 ) : Object.keys(statsData?.ordersByMethod || {}).length ? (
-                  Object.entries(statsData?.ordersByMethod).map(([method, count]) => (
-                    <li key={method} className="flex justify-between items-center">
-                      <span className="capitalize">{method}</span>
-                      <span className="text-accent font-medium">{count}</span>
-                    </li>
-                  ))
+                  Object.entries(statsData?.ordersByMethod).map(
+                    ([method, count]) => (
+                      <li
+                        key={method}
+                        className="flex justify-between items-center"
+                      >
+                        <span className="capitalize">{method}</span>
+                        <span className="text-accent font-medium">{count}</span>
+                      </li>
+                    )
+                  )
                 ) : (
                   <li className="text-center">No data available</li>
                 )}
@@ -196,7 +232,9 @@ const AdminDashboard = () => {
 
         {/* Recent Orders */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-neutral-dark mb-4 font-headings">Recent Orders</h2>
+          <h2 className="text-2xl font-semibold text-neutral-dark mb-4 font-headings">
+            Recent Orders
+          </h2>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <select
               name="status"
@@ -246,23 +284,34 @@ const AdminDashboard = () => {
                   </tr>
                 ) : recentOrders?.length ? (
                   recentOrders.map((order) => (
-                    <tr key={order.id} className="border-b border-neutral-light/50 hover:bg-neutral-light/20 transition-colors">
+                    <tr
+                      key={order.id}
+                      className="border-b border-neutral-light/50 hover:bg-neutral-light/20 transition-colors"
+                    >
                       <td className="p-4">{order.orderNumber}</td>
-                      <td className="p-4">{order.user.name || order.user.email}</td>
+                      <td className="p-4">
+                        {order.user.name || order.user.email}
+                      </td>
                       <td className="p-4">₹{order.total}</td>
                       <td className="p-4 capitalize">
                         <span
                           className={
-                            order.status === 'delivered' ? 'text-success' :
-                              order.status === 'pending' ? 'text-warning' :
-                                order.status === 'cancelled' ? 'text-error' : 'text-neutral'
+                            order.status === 'delivered'
+                              ? 'text-success'
+                              : order.status === 'pending'
+                                ? 'text-warning'
+                                : order.status === 'cancelled'
+                                  ? 'text-error'
+                                  : 'text-neutral'
                           }
                         >
                           {order.status}
                         </span>
                       </td>
                       <td className="p-4 capitalize">{order.paymentMethod}</td>
-                      <td className="p-4">{format(new Date(order.createdAt), 'PP')}</td>
+                      <td className="p-4">
+                        {format(new Date(order.createdAt), 'PP')}
+                      </td>
                       <td className="p-4">
                         <button
                           onClick={() => openOrderDetails(order.id)}
@@ -276,7 +325,9 @@ const AdminDashboard = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="p-4 text-center">No recent orders</td>
+                    <td colSpan="7" className="p-4 text-center">
+                      No recent orders
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -286,7 +337,9 @@ const AdminDashboard = () => {
 
         {/* Top Products */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-neutral-dark mb-4 font-headings">Top Products</h2>
+          <h2 className="text-2xl font-semibold text-neutral-dark mb-4 font-headings">
+            Top Products
+          </h2>
           <div className="bg-surface rounded-lg shadow-md overflow-x-auto">
             <table className="min-w-full text-neutral-dark font-text">
               <thead>
@@ -307,7 +360,10 @@ const AdminDashboard = () => {
                   </tr>
                 ) : topProducts?.length ? (
                   topProducts.map((product, index) => (
-                    <tr key={index} className="border-b border-neutral-light/50 hover:bg-neutral-light/20 transition-colors">
+                    <tr
+                      key={index}
+                      className="border-b border-neutral-light/50 hover:bg-neutral-light/20 transition-colors"
+                    >
                       <td className="p-4">{product.name}</td>
                       <td className="p-4 capitalize">{product.category}</td>
                       <td className="p-4">₹{product.totalRevenue}</td>
@@ -316,7 +372,9 @@ const AdminDashboard = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" className="p-4 text-center">No top products</td>
+                    <td colSpan="4" className="p-4 text-center">
+                      No top products
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -326,7 +384,9 @@ const AdminDashboard = () => {
 
         {/* All Orders */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-neutral-dark mb-4 font-headings">All Orders</h2>
+          <h2 className="text-2xl font-semibold text-neutral-dark mb-4 font-headings">
+            All Orders
+          </h2>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <select
               name="status"
@@ -376,14 +436,21 @@ const AdminDashboard = () => {
                   </tr>
                 ) : allOrders?.length ? (
                   allOrders.map((order) => (
-                    <tr key={order.id} className="border-b border-neutral-light/50 hover:bg-neutral-light/20 transition-colors">
+                    <tr
+                      key={order.id}
+                      className="border-b border-neutral-light/50 hover:bg-neutral-light/20 transition-colors"
+                    >
                       <td className="p-4">{order.orderNumber}</td>
-                      <td className="p-4">{order.user.name || order.user.email}</td>
+                      <td className="p-4">
+                        {order.user.name || order.user.email}
+                      </td>
                       <td className="p-4">₹{order.total}</td>
                       <td className="p-4">
                         <select
                           value={order.status}
-                          onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                          onChange={(e) =>
+                            handleStatusUpdate(order.id, e.target.value)
+                          }
                           className="bg-surface text-neutral-dark p-2 rounded-lg border border-neutral-light focus:ring-2 focus:ring-primary focus:outline-none font-text"
                           disabled={updateStatusMutation.isLoading}
                           aria-label={`Update status for order ${order.orderNumber}`}
@@ -395,7 +462,9 @@ const AdminDashboard = () => {
                         </select>
                       </td>
                       <td className="p-4 capitalize">{order.paymentMethod}</td>
-                      <td className="p-4">{format(new Date(order.createdAt), 'PP')}</td>
+                      <td className="p-4">
+                        {format(new Date(order.createdAt), 'PP')}
+                      </td>
                       <td className="p-4 flex gap-4 items-center">
                         <button
                           onClick={() => openOrderDetails(order.id)}
@@ -407,7 +476,10 @@ const AdminDashboard = () => {
                         <button
                           onClick={() => handleCancelOrder(order.id)}
                           className="text-error hover:text-error/80"
-                          disabled={order.status === 'cancelled' || cancelOrderMutation.isLoading}
+                          disabled={
+                            order.status === 'cancelled' ||
+                            cancelOrderMutation.isLoading
+                          }
                           aria-label={`Cancel order ${order.orderNumber}`}
                         >
                           <FaTimes className="text-lg" />
@@ -417,7 +489,9 @@ const AdminDashboard = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="p-4 text-center">No orders</td>
+                    <td colSpan="7" className="p-4 text-center">
+                      No orders
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -445,23 +519,40 @@ const AdminDashboard = () => {
             </div>
           ) : orderDetails?.id ? (
             <div className="space-y-4 text-neutral-dark font-text">
-              <p><strong>Order #:</strong> {orderDetails.orderNumber}</p>
-              <p><strong>Customer:</strong> {orderDetails.user.name || orderDetails.user.email}</p>
-              <p><strong>Total:</strong> ₹{orderDetails.total}</p>
+              <p>
+                <strong>Order #:</strong> {orderDetails.orderNumber}
+              </p>
+              <p>
+                <strong>Customer:</strong>{' '}
+                {orderDetails.user.name || orderDetails.user.email}
+              </p>
+              <p>
+                <strong>Total:</strong> ₹{orderDetails.total}
+              </p>
               <p>
                 <strong>Status:</strong>{' '}
                 <span
                   className={
-                    orderDetails.status === 'delivered' ? 'text-success' :
-                      orderDetails.status === 'pending' ? 'text-warning' :
-                        orderDetails.status === 'cancelled' ? 'text-error' : 'text-neutral'
+                    orderDetails.status === 'delivered'
+                      ? 'text-success'
+                      : orderDetails.status === 'pending'
+                        ? 'text-warning'
+                        : orderDetails.status === 'cancelled'
+                          ? 'text-error'
+                          : 'text-neutral'
                   }
                 >
                   {orderDetails.status}
                 </span>
               </p>
-              <p><strong>Payment Method:</strong> <span className="capitalize">{orderDetails.paymentMethod}</span></p>
-              <p><strong>Date:</strong> {format(new Date(orderDetails.createdAt), 'PP')}</p>
+              <p>
+                <strong>Payment Method:</strong>{' '}
+                <span className="capitalize">{orderDetails.paymentMethod}</span>
+              </p>
+              <p>
+                <strong>Date:</strong>{' '}
+                {format(new Date(orderDetails.createdAt), 'PP')}
+              </p>
               <h3 className="text-lg font-medium mt-4 font-headings">Items</h3>
               <ul className="list-disc pl-5 space-y-2">
                 {orderDetails.items.map((item, index) => (
@@ -470,7 +561,9 @@ const AdminDashboard = () => {
                   </li>
                 ))}
               </ul>
-              <h3 className="text-lg font-medium mt-4 font-headings">Shipping Address</h3>
+              <h3 className="text-lg font-medium mt-4 font-headings">
+                Shipping Address
+              </h3>
               <p>
                 {Object.values(orderDetails.shippingAddress)
                   .filter(Boolean)
@@ -478,7 +571,9 @@ const AdminDashboard = () => {
               </p>
             </div>
           ) : (
-            <p className="text-neutral-dark font-text">No order details available</p>
+            <p className="text-neutral-dark font-text">
+              No order details available
+            </p>
           )}
         </Modal>
 

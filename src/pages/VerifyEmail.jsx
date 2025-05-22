@@ -74,7 +74,7 @@ const VerifyEmail = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    verifyMutation.mutate({email: formData.email,otp: formData.otp});
+    verifyMutation.mutate({ email: formData.email, otp: formData.otp });
   };
 
   const handleResend = () => {
@@ -82,7 +82,7 @@ const VerifyEmail = () => {
       setFormErrors({ email: 'Valid email is required' });
       return;
     }
-    resendMutation.mutate(formData.email );
+    resendMutation.mutate(formData.email);
   };
 
   const handleInputChange = (e) => {
@@ -112,7 +112,9 @@ const VerifyEmail = () => {
                 formErrors.email ? 'border-error' : ''
               }`}
             />
-            {formErrors.email && <p className="text-error text-sm mt-1">{formErrors.email}</p>}
+            {formErrors.email && (
+              <p className="text-error text-sm mt-1">{formErrors.email}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-neutral-dark mb-1">
@@ -128,7 +130,9 @@ const VerifyEmail = () => {
                 formErrors.otp ? 'border-error' : ''
               }`}
             />
-            {formErrors.otp && <p className="text-error text-sm mt-1">{formErrors.otp}</p>}
+            {formErrors.otp && (
+              <p className="text-error text-sm mt-1">{formErrors.otp}</p>
+            )}
           </div>
           <Button
             type="submit"
@@ -150,8 +154,8 @@ const VerifyEmail = () => {
             {resendMutation.isPending
               ? 'Resending...'
               : canResend
-              ? 'Resend OTP'
-              : `Resend OTP (${resendTimer}s)`}
+                ? 'Resend OTP'
+                : `Resend OTP (${resendTimer}s)`}
           </Button>
         </div>
         <p className="text-center text-neutral mt-4">

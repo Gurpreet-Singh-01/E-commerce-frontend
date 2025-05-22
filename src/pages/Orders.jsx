@@ -11,7 +11,11 @@ const Orders = () => {
   const { isAuthenticated, isLoading: authLoading, user } = useAuth();
 
   // Fetch orders
-  const { data: ordersData, isLoading: ordersLoading, error: ordersError } = useQuery({
+  const {
+    data: ordersData,
+    isLoading: ordersLoading,
+    error: ordersError,
+  } = useQuery({
     queryKey: ['orders'],
     queryFn: getUsersOrder,
     enabled: isAuthenticated && !authLoading,
@@ -53,7 +57,7 @@ const Orders = () => {
           <div className="text-center">
             <p className="text-neutral text-lg mb-4">You have no orders yet</p>
             <Button>
-              <Link to='/products' className='block w-full h-full'>
+              <Link to="/products" className="block w-full h-full">
                 Shop Now
               </Link>
             </Button>
@@ -69,7 +73,8 @@ const Orders = () => {
                   Order #{order.orderNumber}
                 </h2>
                 <p className="text-neutral mb-1">
-                  Placed on: {new Date(order.createdAt).toLocaleDateString('en-IN')}
+                  Placed on:{' '}
+                  {new Date(order.createdAt).toLocaleDateString('en-IN')}
                 </p>
                 <p className="text-neutral mb-1">
                   Items:{' '}
@@ -85,12 +90,13 @@ const Orders = () => {
                   })}
                 </p>
                 <p
-                  className={`inline-block text-sm capitalize px-2 py-1 rounded ${order.status === 'pending'
-                    ? 'bg-warning text-white'
-                    : order.status === 'cancelled'
-                    ? 'bg-error text-white'
-                    : 'bg-success text-white'
-                    }`}
+                  className={`inline-block text-sm capitalize px-2 py-1 rounded ${
+                    order.status === 'pending'
+                      ? 'bg-warning text-white'
+                      : order.status === 'cancelled'
+                        ? 'bg-error text-white'
+                        : 'bg-success text-white'
+                  }`}
                 >
                   Status: {order.status}
                 </p>

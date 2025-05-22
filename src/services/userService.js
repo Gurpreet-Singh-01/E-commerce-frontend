@@ -14,16 +14,15 @@ export const registerUser = async (name, email, password, gender, phone) => {
     email,
     password,
     gender,
-    phone
+    phone,
   });
   return response.data;
 };
 
 export const resendOTP = async (email) => {
   try {
-   
-    const response = await api.post('/user/resend_otp', {email});
-    
+    const response = await api.post('/user/resend_otp', { email });
+
     return response.data;
   } catch (error) {
     console.error('Resend OTP error:', error.response?.data || error.message);
@@ -33,9 +32,8 @@ export const resendOTP = async (email) => {
 
 export const verifyUser = async ({ email, otp }) => {
   try {
-    
     const response = await api.post('/user/verify_user', { email, otp });
-    
+
     return response.data;
   } catch (error) {
     console.error('Verify user error:', error.response?.data || error.message);
@@ -43,7 +41,7 @@ export const verifyUser = async ({ email, otp }) => {
   }
 };
 
-export const changeCurrentPassword = async ({oldPassword, newPassword}) => {
+export const changeCurrentPassword = async ({ oldPassword, newPassword }) => {
   const response = await api.post('/user/change_password', {
     oldPassword,
     newPassword,
@@ -56,7 +54,7 @@ export const forgotPassword = async (email) => {
   return response.data;
 };
 
-export const resetPassword = async ({email, otp, newPassword}) => {
+export const resetPassword = async ({ email, otp, newPassword }) => {
   const response = await api.post('/user/reset_password', {
     email,
     otp,
@@ -78,7 +76,10 @@ export const refreshAccessToken = async () => {
     }
     return user;
   } catch (error) {
-    console.error('Refresh token error:', error.response?.data || error.message);
+    console.error(
+      'Refresh token error:',
+      error.response?.data || error.message
+    );
     throw new Error(error.response?.data?.message || 'Failed to refresh token');
   }
 };
@@ -92,18 +93,21 @@ export const getUserProfile = async () => {
 };
 
 export const updateUserProfile = async (data) => {
-  const response = await api.post('/user/update_userProfile', {name: data.name, phone:data.phone});
+  const response = await api.post('/user/update_userProfile', {
+    name: data.name,
+    phone: data.phone,
+  });
   return response.data;
 };
 
 export const addAddress = async (data) => {
-  const response = await api.post('/user/add_address',data);
+  const response = await api.post('/user/add_address', data);
   return response.data;
 };
 
-export const updateAddress = async ({id,data}) => {
-  console.log('ID: ',id)
-  console.log('data ',data)
+export const updateAddress = async ({ id, data }) => {
+  console.log('ID: ', id);
+  console.log('data ', data);
   const response = await api.patch(`/user/update_address/${id}`, data);
   return response.data;
 };

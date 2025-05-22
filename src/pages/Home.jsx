@@ -14,7 +14,9 @@ const Home = () => {
             Power Up Your Devices
           </h2>
           <h2 className="text-3xl md:text-5xl font-bold font-logo">With</h2>
-          <h1 className="text-5xl md:text-7xl font-bold font-logo">TechTrendz</h1>
+          <h1 className="text-5xl md:text-7xl font-bold font-logo">
+            TechTrendz
+          </h1>
 
           <Button
             size="large"
@@ -24,7 +26,6 @@ const Home = () => {
               Shop Now
             </Link>
           </Button>
-
         </section>
 
         {/* Product Sections */}
@@ -95,7 +96,8 @@ const Home = () => {
                 Immersive Headphones
               </h2>
               <h3 className="text-xl md:text-2xl font-semibold font-logo text-neutral mb-4">
-                Experience sound like never before with our wired and wireless earbuds.
+                Experience sound like never before with our wired and wireless
+                earbuds.
               </h3>
               <p className="text-lg text-neutral">Offers noise cancellation</p>
               <p className="text-lg text-neutral">Deep bass</p>
@@ -137,7 +139,6 @@ const Home = () => {
               </Button>
             </div>
           </div>
-
 
           <div className="flex flex-col md:flex-row items-center justify-around p-10 gap-8">
             <div
