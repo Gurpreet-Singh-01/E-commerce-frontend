@@ -4,7 +4,7 @@ import Button from './Button';
 const ProductCard = ({ product, onAddToCart }) => {
   return (
     <div className="bg-surface shadow-md rounded-lg overflow-hidden transition-transform hover:scale-105 font-text">
-      <Link to={`/products/${product.id}`}>
+      <Link to={`/products/${product.id}/product`}>
         <div className="relative w-full aspect-square">
           <img
             src={product.image}

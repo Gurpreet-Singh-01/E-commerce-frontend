@@ -14,6 +14,7 @@ import {
   cancelOrder,
 } from '../services/dashboardService';
 import { format } from 'date-fns';
+import Loader from '../components/Loader';
 
 const AdminDashboard = () => {
   const { isAdmin, isLoading: authLoading } = useAuth();
@@ -128,13 +129,6 @@ const AdminDashboard = () => {
     }
   };
 
-  if (authLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-background font-logo">
-        <FaSpinner className="animate-spin text-4xl text-primary" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background font-logo">

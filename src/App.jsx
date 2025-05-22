@@ -18,6 +18,7 @@ import Checkout from './pages/Checkout';
 import VerifyEmail from './pages/VerifyEmail';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import AdminProductManagement from './pages/AdminProductManagement';
 
 const App = () => {
   return (
@@ -73,6 +74,15 @@ const App = () => {
             element={
               <AdminRoute>
                 <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/products"
+            element={
+              <AdminRoute>
+                <AdminProductManagement />
               </AdminRoute>
             }
           />
