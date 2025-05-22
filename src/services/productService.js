@@ -11,8 +11,13 @@ export const getProductById = async (id) => {
 };
 
 export const createProduct = async (data) => {
-  const response = await api.post('/product/', data);
-  return response.data;
+  try {
+    const response = await api.post('/product/', data);
+    return response.data;
+    
+  } catch (error) {
+    console.log(error)
+  }
 };
 
 export const updateProduct = async (id, data) => {
