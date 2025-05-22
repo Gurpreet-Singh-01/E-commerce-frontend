@@ -6,16 +6,28 @@ export const getCategories = async () => {
 };
 
 export const createCategory = async (data) => {
-  const response = await api.post('/category/', data);
-  return response.data;
+  try {
+    const response = await api.post('/category/', data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to create category');
+  }
 };
 
 export const updateCategory = async (id, data) => {
-  const response = await api.patch(`/category/${id}`, data);
-  return response.data;
+  try {
+    const response = await api.patch(`/category/${id}`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to update category');
+  }
 };
 
 export const deleteCategory = async (id) => {
-  const response = await api.delete(`/category/${id}`);
-  return response.data;
+  try {
+    const response = await api.delete(`/category/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to update category');
+  }
 };

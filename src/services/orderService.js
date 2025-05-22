@@ -31,7 +31,7 @@ export const createOrder = async (orderData) => {
       'Create order error:',
       error.response?.data?.message || error.message
     );
-    throw new Error(error.response?.data?.message || 'Failed to create order');
+    throw new Error(error.message || 'Failed to create order');
   }
 };
 
@@ -66,6 +66,6 @@ export const getUsersOrder = async () => {
       'Get orders error:',
       error.response?.data?.message || error.message
     );
-    throw new Error(error.response?.data?.message || 'Failed to fetch orders');
+    throw new Error(error.message || 'Failed to fetch orders');
   }
 };

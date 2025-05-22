@@ -15,16 +15,25 @@ export const createProduct = async (data) => {
     const response = await api.post('/product/', data);
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+    throw new Error(error.message || 'Failed to create Product');
   }
 };
 
 export const updateProduct = async (id, data) => {
-  const response = await api.patch(`/product/${id}`, data);
-  return response.data;
+  try {
+    const response = await api.patch(`/product/${id}`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to update Product');
+  }
 };
 
 export const deleteProduct = async (id) => {
-  const response = await api.delete(`/product/${id}`);
-  return response.data;
+  try {
+    const response = await api.delete(`/product/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };

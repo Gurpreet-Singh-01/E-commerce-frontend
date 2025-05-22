@@ -72,7 +72,7 @@ const AdminProductManagement = () => {
     },
     onError: (error) => {
       toast.error(
-        error.response?.data?.message || 'Failed to create category',
+        error.message || 'Failed to create category',
         { theme: 'light' }
       );
     },
@@ -87,7 +87,7 @@ const AdminProductManagement = () => {
     },
     onError: (error) => {
       toast.error(
-        error.response?.data?.message || 'Failed to update category',
+        error.message || 'Failed to update category',
         { theme: 'light' }
       );
     },
@@ -102,7 +102,7 @@ const AdminProductManagement = () => {
     },
     onError: (error) => {
       toast.error(
-        error.response?.data?.message || 'Failed to delete category',
+        error.message || 'Failed to delete category',
         { theme: 'light' }
       );
     },
@@ -124,7 +124,7 @@ const AdminProductManagement = () => {
       closeProductModal();
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to create product', {
+      toast.error(error.message || 'Failed to create product', {
         theme: 'light',
       });
     },
@@ -145,7 +145,7 @@ const AdminProductManagement = () => {
       closeProductModal();
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to update product', {
+      toast.error(error.message || 'Failed to update product', {
         theme: 'light',
       });
     },
@@ -159,7 +159,7 @@ const AdminProductManagement = () => {
       closeDeleteModal();
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to delete product', {
+      toast.error(error.message || 'Failed to delete product', {
         theme: 'light',
       });
     },

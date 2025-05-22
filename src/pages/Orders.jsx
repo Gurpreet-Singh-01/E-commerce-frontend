@@ -10,7 +10,6 @@ const Orders = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading: authLoading, user } = useAuth();
 
-  // Fetch orders
   const {
     data: ordersData,
     isLoading: ordersLoading,
@@ -25,7 +24,6 @@ const Orders = () => {
     },
   });
 
-  // Loading and auth checks
   if (authLoading || ordersLoading) {
     return <Loader size="large" className="my-8" />;
   }
