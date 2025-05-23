@@ -21,6 +21,7 @@ export const createOrder = async (orderData) => {
         status: order.payment?.status || 'unknown',
         shippingAddress: order.shippingAddress || {},
         createdAt: order.createdAt,
+        payment: order.payment || {},
       },
       message: response.data.message || 'Order created successfully',
       success: response.data.success ?? true,
@@ -32,6 +33,42 @@ export const createOrder = async (orderData) => {
       error.response?.data?.message || error.message
     );
     throw new Error(error.message || 'Failed to create order');
+  }
+};
+
+export const updateOrder = async ({ orderId, payment }) => {
+  try {
+    const response = await api.patch(`/order/${orderId}`, { orderId, payment });
+    const order = response.data.data || {};
+    return {
+      data: {
+        id: order._id,
+        user: order.user,
+        orderNumber: order.orderNumber,
+        items:
+          order.items?.map((item) => ({
+            id: item.product._id,
+            name: item.product.name,
+            price: item.product.price,
+            quantity: item.quantity,
+            image: item.product.image?.url || '',
+          })) || [],
+        total: order.totalAmount,
+        status: order.payment?.status || 'unknown',
+        shippingAddress: order.shippingAddress || {},
+        createdAt: order.createdAt,
+        payment: order.payment || {},
+      },
+      message: response.data.message || 'Order updated successfully',
+      success: response.data.success ?? true,
+      statusCode: response.data.statusCode || 200,
+    };
+  } catch (error) {
+    console.log(
+      'Update order error:',
+      error.response?.data?.message || error.message
+    );
+    throw new Error(error.message || 'Failed to update order');
   }
 };
 

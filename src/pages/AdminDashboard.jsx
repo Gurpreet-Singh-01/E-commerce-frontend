@@ -14,7 +14,6 @@ import {
   cancelOrder,
 } from '../services/dashboardService';
 import { format } from 'date-fns';
-import Loader from '../components/Loader';
 
 const AdminDashboard = () => {
   const { isAdmin, isLoading: authLoading } = useAuth();
@@ -27,34 +26,29 @@ const AdminDashboard = () => {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [cancelOrderId, setCancelOrderId] = useState(null);
 
-  // Redirect non-admins
   if (!authLoading && !isAdmin()) {
     window.location.href = '/';
     return null;
   }
 
-  // Fetch dashboard stats
   const { data: statsData, isLoading: statsLoading } = useQuery({
     queryKey: ['dashboardStats'],
     queryFn: getDashboardStatus,
     select: (response) => response.data,
   });
 
-  // Fetch recent orders
   const { data: recentOrders, isLoading: recentOrdersLoading } = useQuery({
     queryKey: ['recentOrders', orderFilters],
     queryFn: () => getRecentOrders(orderFilters),
     select: (response) => response.data,
   });
 
-  // Fetch top products
   const { data: topProducts, isLoading: topProductsLoading } = useQuery({
     queryKey: ['topProducts'],
     queryFn: getTopProducts,
     select: (response) => response.data,
   });
 
-  // Fetch all orders
   const { data: allOrders, isLoading: allOrdersLoading } = useQuery({
     queryKey: ['allOrders', allOrderFilters],
     queryFn: () => getAllOrders(allOrderFilters),
@@ -100,7 +94,6 @@ const AdminDashboard = () => {
     },
   });
 
-  // Handle filter changes
   const handleOrderFilterChange = (e) => {
     const { name, value } = e.target;
     setOrderFilters((prev) => ({ ...prev, [name]: value }));
@@ -111,17 +104,14 @@ const AdminDashboard = () => {
     setAllOrderFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle status update
   const handleStatusUpdate = (orderId, status) => {
     updateStatusMutation.mutate({ orderId, status });
   };
 
-  // Handle order cancellation
   const handleCancelOrder = (orderId) => {
     setCancelOrderId(orderId);
   };
 
-  // Handle order details modal
   const openOrderDetails = (orderId) => {
     setSelectedOrderId(orderId);
   };

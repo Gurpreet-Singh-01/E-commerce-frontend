@@ -6,26 +6,22 @@ import { toast } from 'react-toastify';
 import { setCart } from '../store/cartSlice';
 import useAuth from '../hooks/useAuth';
 import { getCart, clearCart } from '../services/cartService';
-import { createOrder } from '../services/orderService';
+import { createOrder, updateOrder } from '../services/orderService';
 import { getUserProfile } from '../services/userService';
 import Loader from '../components/Loader';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import { FaSpinner } from 'react-icons/fa';
 
 const Checkout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
-  // Address selection state
   const [useNewAddress, setUseNewAddress] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
-
-  // Payment method state
   const [paymentMethod, setPaymentMethod] = useState('cod');
-
-  // New address form state
   const [formData, setFormData] = useState({
     houseNumber: '',
     street: '',
@@ -36,8 +32,8 @@ const Checkout = () => {
     postalCode: '',
   });
   const [formErrors, setFormErrors] = useState({});
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
-  // Fetch cart
   const {
     data: cartData,
     isLoading: cartLoading,
@@ -52,7 +48,6 @@ const Checkout = () => {
     },
   });
 
-  // Fetch user profile (for addresses)
   const { data: userData, isLoading: userLoading } = useQuery({
     queryKey: ['userProfile'],
     queryFn: getUserProfile,
@@ -75,23 +70,56 @@ const Checkout = () => {
     },
   });
 
-  // Place order mutation
   const placeOrderMutation = useMutation({
     mutationFn: createOrder,
     onSuccess: async (response) => {
+      console.log('Place Order Success:', response);
       await clearCartMutation.mutateAsync();
       dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
       queryClient.invalidateQueries(['cart']);
-      toast.success(response.message, { toastId: 'order-success' });
-      navigate('/products');
+      if (paymentMethod === 'online') {
+        const orderId = response.data?.id;
+        const razorpayOrderId = response.data?.payment?.transactionId;
+        const amount = response.data?.total;
+        if (!orderId || !razorpayOrderId || !amount) {
+          console.error('Missing payment data:', {
+            orderId,
+            razorpayOrderId,
+            amount,
+            response,
+          });
+          toast.error('Failed to initiate payment: Invalid order data.', { toastId: 'payment-init-error' });
+          setPaymentLoading(false);
+          return;
+        }
+        initiatePayment(orderId, razorpayOrderId, amount);
+      } else {
+        toast.success(response.message, { toastId: 'order-success' });
+        navigate('/thank-you');
+      }
     },
     onError: (error) => {
       console.debug('Place order error:', error.message);
       toast.error(error.message, { toastId: 'order-error' });
+      setPaymentLoading(false);
     },
   });
 
-  // Clear cart mutation
+  const updateOrderMutation = useMutation({
+    mutationFn: updateOrder,
+    onSuccess: (response) => {
+      console.log('Update Order Success:', response);
+      toast.success('Payment completed', { toastId: 'payment-success' });
+      navigate('/thank-you');
+      setPaymentLoading(false);
+    },
+    onError: (error) => {
+      console.debug('Update order error:', error.message);
+      toast.error(error.message, { toastId: 'update-order-error' });
+      setPaymentLoading(false);
+    },
+  });
+
   const clearCartMutation = useMutation({
     mutationFn: clearCart,
     onError: (error) => {
@@ -100,7 +128,66 @@ const Checkout = () => {
     },
   });
 
-  // Form validation
+  const initiatePayment = (orderId, razorpayOrderId, amount) => {
+    console.log('Initiate Payment:', { orderId, razorpayOrderId, amount });
+    if (!window.Razorpay) {
+      console.error('Razorpay err');
+      toast.error('Payment service unavailable.', { toastId: 'razorpay-sdk-error' });
+      setPaymentLoading(false);
+      return;
+    }
+    const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+    console.log('Razorpay Key:', razorpayKey);
+    if (!razorpayKey) {
+      console.error('No Razorpay key provided');
+      toast.error('Payment service unavailable: No key provided.', { toastId: 'razorpay-key-error' });
+      setPaymentLoading(false);
+      return;
+    }
+    try {
+      const options = {
+        key: razorpayKey,
+        amount: amount * 100,
+        currency: 'INR',
+        name: 'TechTrendz',
+        description: 'Order Payment',
+        order_id: razorpayOrderId,
+        handler: (response) => {
+          console.log('Payment Response:', response);
+          console.log('razorpay_order_id:', response.razorpay_order_id);
+          console.log('razorpay_payment_id:', response.razorpay_payment_id);
+          console.log('razorpay_signature:', response.razorpay_signature);
+          console.log('orderId:', orderId);
+          updateOrderMutation.mutate({
+            orderId,
+            payment: {
+              transactionId: response.razorpay_payment_id,
+              },
+          });
+        },
+        prefill: {
+          name: user?.name, 
+          email: user?.email,
+          contact: user?.phone,
+        },
+        theme: {
+          color: '#1e40af',
+        },
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', (error) => {
+        console.error('Razorpay Payment Failed:', error);
+        toast.error(`Payment failed: ${error.error.description}`, { toastId: 'payment-failed' });
+        setPaymentLoading(false);
+      });
+      rzp.open();
+    } catch (error) {
+      console.error('Initiate Payment Error:', error);
+      toast.error('Failed to initiate payment. Please try again.', { toastId: 'payment-init-error' });
+      setPaymentLoading(false);
+    }
+  };
+
   const validateForm = () => {
     if (!useNewAddress && !selectedAddressId) {
       toast.error('Please select an address or enter a new one', {
@@ -121,8 +208,7 @@ const Checkout = () => {
       ];
       fields.forEach((field) => {
         if (!formData[field].trim()) {
-          errors[field] =
-            `${field.replace(/([A-Z])/g, ' $1').trim()} is required`;
+          errors[field] = `${field.replace(/([A-Z])/g, ' $1').trim()} is required`;
         }
       });
       if (formData.postalCode && !/^\d{5,10}$/.test(formData.postalCode)) {
@@ -134,28 +220,31 @@ const Checkout = () => {
     return true;
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
+    if (!cartData?.cart?.items?.length) {
+      toast.error('Cart is empty', { toastId: 'cart-empty' });
+      return;
+    }
 
+    setPaymentLoading(true);
     const orderData = {
-      paymentMethod: 'cod', // Only COD sent to backend
+      paymentMethod,
       ...(useNewAddress
         ? { shippingAddress: formData }
         : { addressId: selectedAddressId }),
     };
+    console.log('Order Data:', orderData);
     placeOrderMutation.mutate(orderData);
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setFormErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
-  // Loading and auth checks
   if (authLoading || userLoading || cartLoading) {
     return <Loader size="large" className="my-8" />;
   }
@@ -176,7 +265,7 @@ const Checkout = () => {
 
   const cart = cartData?.cart || { items: [], totalQuantity: 0, totalPrice: 0 };
   const addresses = userData?.data?.address || [];
-  const shippingCost = 5; // Placeholder, adjust as needed
+  const shippingCost = 5;
 
   return (
     <div className="min-h-screen flex flex-col font-text bg-background">
@@ -188,7 +277,6 @@ const Checkout = () => {
         {cart.items.length === 0 ? (
           <div className="text-center">
             <p className="text-neutral text-lg mb-4">Your cart is empty</p>
-
             <Button>
               <Link to="/products" className="block w-full h-full">
                 Shop Now
@@ -200,13 +288,11 @@ const Checkout = () => {
             onSubmit={handleSubmit}
             className="flex flex-col lg:flex-row lg:items-start gap-8"
           >
-            {/* Address Section */}
             <div className="flex-1">
               <h2 className="text-xl font-bold mb-4 font-headings text-neutral-dark">
                 Shipping Address
               </h2>
               <div className="bg-surface p-6 rounded-lg shadow-sm mb-6">
-                {/* Custom Checkbox */}
                 <label className="flex items-center mb-6 cursor-pointer">
                   <span className="relative inline-block w-5 h-5 mr-3">
                     <input
@@ -216,9 +302,8 @@ const Checkout = () => {
                       className="absolute opacity-0 w-0 h-0"
                     />
                     <span
-                      className={`absolute inset-0 border-2 border-neutral-light rounded-md transition-all duration-200 ${
-                        useNewAddress ? 'bg-primary border-primary' : 'bg-white'
-                      }`}
+                      className={`absolute inset-0 border-2 border-neutral-light rounded-md transition-all duration-200 ${useNewAddress ? 'bg-primary border-primary' : 'bg-white'
+                        }`}
                     >
                       {useNewAddress && (
                         <svg
@@ -259,11 +344,10 @@ const Checkout = () => {
                             className="absolute opacity-0 w-0 h-0"
                           />
                           <span
-                            className={`absolute inset-0 border-2 border-neutral-light rounded-full transition-all duration-200 ${
-                              selectedAddressId === addr._id
+                            className={`absolute inset-0 border-2 border-neutral-light rounded-full transition-all duration-200 ${selectedAddressId === addr._id
                                 ? 'border-primary'
                                 : 'bg-white'
-                            }`}
+                              }`}
                           >
                             {selectedAddressId === addr._id && (
                               <span className="absolute inset-1.5 bg-primary rounded-full" />
@@ -310,9 +394,8 @@ const Checkout = () => {
                           value={formData[name]}
                           onChange={handleInputChange}
                           placeholder={`Enter ${label.toLowerCase()}`}
-                          className={`w-full border-2 border-neutral-light rounded-md p-2 focus:ring-2 focus:ring-primary focus:border-primary transition-all ${
-                            formErrors[name] ? 'border-error' : ''
-                          }`}
+                          className={`w-full border-2 border-neutral-light rounded-md p-2 focus:ring-2 focus:ring-primary focus:border-primary transition-all ${formErrors[name] ? 'border-error' : ''
+                            }`}
                         />
                         {formErrors[name] && (
                           <p className="text-error text-sm mt-1">
@@ -341,11 +424,8 @@ const Checkout = () => {
                         className="absolute opacity-0 w-0 h-0"
                       />
                       <span
-                        className={`absolute inset-0 border-2 border-neutral-light rounded-full transition-all duration-200 ${
-                          paymentMethod === 'cod'
-                            ? 'border-primary'
-                            : 'bg-white'
-                        }`}
+                        className={`absolute inset-0 border-2 border-neutral-light rounded-full transition-all duration-200 ${paymentMethod === 'cod' ? 'border-primary' : 'bg-white'
+                          }`}
                       >
                         {paymentMethod === 'cod' && (
                           <span className="absolute inset-1.5 bg-primary rounded-full" />
@@ -356,27 +436,31 @@ const Checkout = () => {
                       Cash on Delivery (COD)
                     </span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-not-allowed opacity-50 relative group">
+                  <label className="flex items-center gap-3 cursor-pointer">
                     <span className="relative inline-block w-5 h-5">
                       <input
                         type="radio"
                         name="paymentMethod"
                         value="online"
-                        disabled
+                        checked={paymentMethod === 'online'}
+                        onChange={() => setPaymentMethod('online')}
                         className="absolute opacity-0 w-0 h-0"
                       />
-                      <span className="absolute inset-0 border-2 border-neutral-light rounded-full" />
+                      <span
+                        className={`absolute inset-0 border-2 border-neutral-light rounded-full transition-all duration-200 ${paymentMethod === 'online' ? 'border-primary' : 'bg-white'
+                          }`}
+                      >
+                        {paymentMethod === 'online' && (
+                          <span className="absolute inset-1.5 bg-primary rounded-full" />
+                        )}
+                      </span>
                     </span>
                     <span className="text-neutral-dark">Online Payment</span>
-                    <span className="absolute hidden group-hover:block bg-neutral-dark text-white text-xs rounded py-1 px-2 -top-8 left-1/2 transform -translate-x-1/2">
-                      Coming soon
-                    </span>
                   </label>
                 </div>
               </div>
             </div>
 
-            {/* Order Summary */}
             <div className="lg:w-1/3">
               <div className="bg-surface p-6 rounded-lg shadow-sm">
                 <h2 className="text-xl font-bold mb-4 font-headings text-neutral-dark">
@@ -415,12 +499,14 @@ const Checkout = () => {
                 <Button
                   type="submit"
                   size="large"
-                  className="w-full mt-4 hover:bg-primary-dark transition-colors"
-                  disabled={placeOrderMutation.isLoading}
+                  className="w-full mt-4 hover:bg-primary-dark transition-colors flex justify-center items-center"
+                  disabled={placeOrderMutation.isPending || paymentLoading}
                 >
-                  {placeOrderMutation.isLoading
-                    ? 'Placing Order...'
-                    : 'Place Order'}
+                  {paymentLoading || placeOrderMutation.isPending ? (
+                    <FaSpinner className="animate-spin mr-2" />
+                  ) : (
+                    'Place Order'
+                  )}
                 </Button>
               </div>
             </div>

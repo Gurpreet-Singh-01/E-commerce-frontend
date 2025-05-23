@@ -134,19 +134,19 @@ export const getAllOrders = async ({ status, method }) => {
             image: item.product.image?.url || '',
           })) || [],
         total: order.totalAmount,
-        status: order.payment?.status || 'unknwon',
-        paymentMethod: order.payment?.method || 'unknwon',
+        status: order.payment?.status || 'unknown',
+        paymentMethod: order.payment?.method || 'unkwown',
         shippingAddress: order.shippingAddress || {},
         createdAt: order.createdAt,
       })),
-      message: response.data.message || 'Recent orders fetched successfully',
+      message: response.data.message || 'All orders fetched successfully',
       success: response.data.success ?? true,
       statusCode: response.data.statusCode || 200,
     };
   } catch (error) {
     return {
       data: [],
-      message: error.response?.data?.message || 'Failed to fetch recent orders',
+      message: error.response?.data?.message || 'Failed to fetch all orders',
       success: false,
       statusCode: error.response?.status || 500,
     };

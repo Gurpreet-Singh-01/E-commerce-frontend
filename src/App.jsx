@@ -19,6 +19,7 @@ import VerifyEmail from './pages/VerifyEmail';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import AdminProductManagement from './pages/AdminProductManagement';
+import ThankYou from './components/ThankYou';
 
 const App = () => {
   return (
@@ -67,6 +68,11 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/thank-you" element={
+            <ProtectedRoute>
+              <ThankYou />
+            </ProtectedRoute>
+          } />
 
           <Route
             path="/admin"

@@ -427,12 +427,12 @@ const AdminProductManagement = () => {
                 onClick={handleCategorySubmit}
                 className="px-4 py-2 bg-primary text-secondary rounded-lg hover:bg-primary-dark transition-colors font-text"
                 disabled={
-                  createCategoryMutation.isLoading ||
-                  updateCategoryMutation.isLoading
+                  createCategoryMutation.isPending ||
+                  updateCategoryMutation.isPending
                 }
               >
-                {createCategoryMutation.isLoading ||
-                  updateCategoryMutation.isLoading ? (
+                {createCategoryMutation.isPending ||
+                  updateCategoryMutation.isPending ? (
                   <FaSpinner className="animate-spin inline mr-2" />
                 ) : (
                   'Save'
@@ -482,12 +482,12 @@ const AdminProductManagement = () => {
                 onClick={handleProductSubmit}
                 className="px-4 py-2 bg-primary text-secondary rounded-lg hover:bg-primary-dark transition-colors font-text"
                 disabled={
-                  createProductMutation.isLoading ||
-                  updateProductMutation.isLoading
+                  createProductMutation.isPending ||
+                  updateProductMutation.isPending
                 }
               >
-                {createProductMutation.isLoading ||
-                  updateProductMutation.isLoading ? (
+                {createProductMutation.isPending ||
+                  updateProductMutation.isPending ? (
                   <FaSpinner className="animate-spin inline mr-2" />
                 ) : (
                   'Save'
@@ -637,12 +637,12 @@ const AdminProductManagement = () => {
                 onClick={handleDelete}
                 className="px-4 py-2 bg-error text-secondary rounded-lg hover:bg-error/80 transition-colors font-text"
                 disabled={
-                  deleteCategoryMutation.isLoading ||
-                  deleteProductMutation.isLoading
+                  deleteCategoryMutation.isPending ||
+                  deleteProductMutation.isPending
                 }
               >
-                {deleteCategoryMutation.isLoading ||
-                  deleteProductMutation.isLoading ? (
+                {deleteCategoryMutation.isPending ||
+                  deleteProductMutation.isPending ? (
                   <FaSpinner className="animate-spin inline mr-2" />
                 ) : (
                   'Yes'
