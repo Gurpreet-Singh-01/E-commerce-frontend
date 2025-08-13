@@ -1,13 +1,13 @@
 import api from './api';
 
 export const loginUser = async (email, password) => {
-  const response = await api.post('/user/login_user', {
-    email,
-    password,
-  });
-  return response.data;
+  try {
+    const response = await api.post('/user/login_user', { email, password });
+    return response.data.data.user; 
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Login failed');
+  }
 };
-
 export const registerUser = async (name, email, password, gender, phone) => {
   const response = await api.post('/user/register_user', {
     name,
@@ -63,23 +63,33 @@ export const resetPassword = async ({ email, otp, newPassword }) => {
   return response.data;
 };
 
+// export const refreshAccessToken = async () => {
+//   try {
+//     const response = await api.post('/user/refresh_access_token');
+//     const user = response.data?.data?.user;
+//     if (!user || !user._id || !user.role) {
+//       const profileResponse = await getUserProfile();
+//       if (!profileResponse.success || !profileResponse.data) {
+//         throw new Error('Failed to fetch user profile after token refresh');
+//       }
+//       return profileResponse.data;
+//     }
+//     return user;
+//   } catch (error) {
+//     console.error(
+//       'Refresh token error:',
+//       error.response?.data || error.message
+//     );
+//     throw new Error(error.response?.data?.message || 'Failed to refresh token');
+//   }
+// };
+
+
 export const refreshAccessToken = async () => {
   try {
     const response = await api.post('/user/refresh_access_token');
-    const user = response.data?.data?.user;
-    if (!user || !user._id || !user.role) {
-      const profileResponse = await getUserProfile();
-      if (!profileResponse.success || !profileResponse.data) {
-        throw new Error('Failed to fetch user profile after token refresh');
-      }
-      return profileResponse.data;
-    }
-    return user;
+    return response.data.data.user;
   } catch (error) {
-    console.error(
-      'Refresh token error:',
-      error.response?.data || error.message
-    );
     throw new Error(error.response?.data?.message || 'Failed to refresh token');
   }
 };
@@ -88,8 +98,12 @@ export const logoutUser = async () => {
   await api.get('/user/logout_user');
 };
 export const getUserProfile = async () => {
-  const response = await api.get('/user/user');
-  return response.data;
+  try {
+    const response = await api.get('/user/user');
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const updateUserProfile = async (data) => {

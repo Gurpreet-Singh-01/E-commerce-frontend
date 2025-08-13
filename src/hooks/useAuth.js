@@ -146,8 +146,165 @@
 // };
 
 // export default useAuth;
+
+
+
+// import { useDispatch, useSelector } from 'react-redux';
+// import { logout, setCredentials, updateUser } from '../store/authSlice';
+// import { setCart } from '../store/cartSlice';
+// import { getUserProfile, logoutUser, refreshAccessToken } from '../services/userService';
+// import { getCart } from '../services/cartService';
+// import { useEffect, useState } from 'react';
+
+// const useAuth = () => {
+//   const dispatch = useDispatch();
+//   const { user, isAuthenticated } = useSelector((state) => state.auth);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+//   useEffect(() => {
+//     let isMounted = true;
+
+//     const checkAuth = async () => {
+//       const publicPaths = [
+//         '/',
+//         '/products',
+//         '/login',
+//         '/register',
+//         '/verify-email',
+//         '/forgot-password',
+//         '/reset-password',
+//       ];
+//       const isPublicPage = publicPaths.some(
+//         (path) =>
+//           window.location.pathname === path ||
+//           window.location.pathname.startsWith('/products/')
+//       );
+
+//       if (isLoggingOut || !isMounted) {
+//         setIsLoading(false);
+//         return;
+//       }
+
+//       try {
+//         const userResponse = await getUserProfile();
+//         if (userResponse.success && userResponse.data) {
+//           const userData = {
+//             _id: userResponse.data._id,
+//             email: userResponse.data.email,
+//             role: userResponse.data.role,
+//             name: userResponse.data.name,
+//             phone: userResponse.data.phone,
+//             address: userResponse.data.address,
+//           };
+//           dispatch(setCredentials({ user: userData }));
+
+//           try {
+//             const cartResponse = await getCart();
+//             if (cartResponse.success && cartResponse.cart) {
+//               dispatch(setCart(cartResponse.cart));
+//             } else {
+//               dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
+//             }
+//           } catch (cartError) {
+//             console.log('Failed to fetch user cart:', cartError.message);
+//             dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
+//           }
+
+//           setIsLoading(false);
+//         } else {
+//           throw new Error('No user data');
+//         }
+//       } catch (error) {
+//         if (error.response?.status === 401) {
+//           try {
+//             const user = await refreshAccessToken();
+//             if (user && user._id) {
+//               dispatch(updateUser({ user }));
+//               await checkAuth(); // Retry after refresh
+//               return;
+//             }
+//             throw new Error('Refresh token failed');
+//           } catch (refreshError) {
+//             console.error('Failed to refresh token:', refreshError.message);
+//           }
+//         }
+//         console.error('Failed to fetch user profile:', error.message);
+//         dispatch(logout());
+//         dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
+//         setIsLoading(false);
+//         if (!isPublicPage && !window.location.pathname.includes('/login')) {
+//           window.location.href = '/login';
+//         }
+//       }
+//     };
+
+//     checkAuth();
+
+//     return () => {
+//       isMounted = false;
+//     };
+//   }, [dispatch, isLoggingOut]);
+
+//   useEffect(() => {
+//     if (user && isAuthenticated && !isLoading && !isLoggingOut) {
+//       try {
+//         localStorage.setItem(
+//           'authState',
+//           JSON.stringify({ user, isAuthenticated })
+//         );
+//       } catch (error) {
+//         console.log('Failed to save authState to localStorage:', error.message);
+//       }
+//     }
+//   }, [user, isAuthenticated]);
+
+//   const login = (userData) => {
+//     dispatch(setCredentials({ user: userData }));
+//   };
+
+//   const logout_User = async () => {
+//     try {
+//       setIsLoggingOut(true);
+//       await logoutUser();
+//       dispatch(logout());
+//       dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
+//       localStorage.removeItem('cartTotalQuantity');
+//     } catch (error) {
+//       console.log('Logout error:', error.message || 'Logout failed');
+//       dispatch(logout());
+//       dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
+//       localStorage.removeItem('cartTotalQuantity');
+//     } finally {
+//       setIsLoggingOut(false);
+//       if (!window.location.pathname.includes('/login')) {
+//         window.location.href = '/login';
+//       }
+//     }
+//   };
+
+//   const getRole = () => {
+//     return user?.role || null;
+//   };
+
+//   const isAdmin = () => {
+//     return user?.role === 'admin';
+//   };
+
+//   return {
+//     user,
+//     isAuthenticated,
+//     role: getRole(),
+//     login,
+//     logout: logout_User,
+//     isAdmin,
+//     isLoading,
+//   };
+// };
+
+// export default useAuth;
 import { useDispatch, useSelector } from 'react-redux';
-import { logout, setCredentials, updateUser } from '../store/authSlice';
+import { logout, setCredentials } from '../store/authSlice';
 import { setCart } from '../store/cartSlice';
 import { getUserProfile, logoutUser, refreshAccessToken } from '../services/userService';
 import { getCart } from '../services/cartService';
@@ -157,7 +314,6 @@ const useAuth = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -178,55 +334,31 @@ const useAuth = () => {
           window.location.pathname.startsWith('/products/')
       );
 
-      if (isLoggingOut || !isMounted) {
+      if (!isMounted) {
         setIsLoading(false);
         return;
       }
 
       try {
-        const userResponse = await getUserProfile();
-        if (userResponse.success && userResponse.data) {
-          const userData = {
-            _id: userResponse.data._id,
-            email: userResponse.data.email,
-            role: userResponse.data.role,
-            name: userResponse.data.name,
-            phone: userResponse.data.phone,
-            address: userResponse.data.address,
-          };
-          dispatch(setCredentials({ user: userData }));
+        const userData = await getUserProfile();
+        dispatch(setCredentials({ user: userData }));
 
-          try {
-            const cartResponse = await getCart();
-            if (cartResponse.success && cartResponse.cart) {
-              dispatch(setCart(cartResponse.cart));
-            } else {
-              dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
-            }
-          } catch (cartError) {
-            console.log('Failed to fetch user cart:', cartError.message);
-            dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
-          }
+        const cartData = await getCart();
+        dispatch(setCart(cartData || { items: [], totalQuantity: 0, totalPrice: 0 }));
 
-          setIsLoading(false);
-        } else {
-          throw new Error('No user data');
-        }
+        setIsLoading(false);
       } catch (error) {
         if (error.response?.status === 401) {
           try {
-            const user = await refreshAccessToken();
-            if (user && user._id) {
-              dispatch(updateUser({ user }));
-              await checkAuth(); // Retry after refresh
-              return;
-            }
-            throw new Error('Refresh token failed');
+            const userData = await refreshAccessToken();
+            dispatch(setCredentials({ user: userData }));
+            await checkAuth(); // Retry after refresh
+            return;
           } catch (refreshError) {
-            console.error('Failed to refresh token:', refreshError.message);
+            console.error('Refresh failed:', refreshError.message);
           }
         }
-        console.error('Failed to fetch user profile:', error.message);
+        console.error('Auth check failed:', error.message);
         dispatch(logout());
         dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
         setIsLoading(false);
@@ -241,20 +373,13 @@ const useAuth = () => {
     return () => {
       isMounted = false;
     };
-  }, [dispatch, isLoggingOut]);
+  }, [dispatch]);
 
   useEffect(() => {
-    if (user && isAuthenticated && !isLoading && !isLoggingOut) {
-      try {
-        localStorage.setItem(
-          'authState',
-          JSON.stringify({ user, isAuthenticated })
-        );
-      } catch (error) {
-        console.log('Failed to save authState to localStorage:', error.message);
-      }
+    if (user && isAuthenticated && !isLoading) {
+      localStorage.setItem('authState', JSON.stringify({ user, isAuthenticated }));
     }
-  }, [user, isAuthenticated]);
+  }, [user, isAuthenticated, isLoading]);
 
   const login = (userData) => {
     dispatch(setCredentials({ user: userData }));
@@ -262,39 +387,29 @@ const useAuth = () => {
 
   const logout_User = async () => {
     try {
-      setIsLoggingOut(true);
       await logoutUser();
       dispatch(logout());
       dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
+      localStorage.removeItem('authState');
       localStorage.removeItem('cartTotalQuantity');
+      window.location.href = '/login';
     } catch (error) {
-      console.log('Logout error:', error.message || 'Logout failed');
+      console.error('Logout error:', error.message);
       dispatch(logout());
       dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
+      localStorage.removeItem('authState');
       localStorage.removeItem('cartTotalQuantity');
-    } finally {
-      setIsLoggingOut(false);
-      if (!window.location.pathname.includes('/login')) {
-        window.location.href = '/login';
-      }
+      window.location.href = '/login';
     }
-  };
-
-  const getRole = () => {
-    return user?.role || null;
-  };
-
-  const isAdmin = () => {
-    return user?.role === 'admin';
   };
 
   return {
     user,
     isAuthenticated,
-    role: getRole(),
+    role: user?.role || null,
     login,
     logout: logout_User,
-    isAdmin,
+    isAdmin: () => user?.role === 'admin',
     isLoading,
   };
 };
