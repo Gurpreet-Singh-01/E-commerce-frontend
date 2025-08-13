@@ -2,7 +2,7 @@ import axios from 'axios';
 import { updateUser, logout } from '../store/authSlice';
 import { refreshAccessToken } from './userService';
 import { store } from '../store/index';
-
+import {API_Version} from '../utils/constants'
 let isRefreshing = false;
 let failedQueue = [];
 
@@ -18,7 +18,7 @@ const processQueue = (error) => {
 };
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}api/${API_Version}`,
   withCredentials: true,
 });
 
