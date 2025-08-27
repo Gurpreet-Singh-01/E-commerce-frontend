@@ -63,27 +63,6 @@ export const resetPassword = async ({ email, otp, newPassword }) => {
   return response.data;
 };
 
-// export const refreshAccessToken = async () => {
-//   try {
-//     const response = await api.post('/user/refresh_access_token');
-//     const user = response.data?.data?.user;
-//     if (!user || !user._id || !user.role) {
-//       const profileResponse = await getUserProfile();
-//       if (!profileResponse.success || !profileResponse.data) {
-//         throw new Error('Failed to fetch user profile after token refresh');
-//       }
-//       return profileResponse.data;
-//     }
-//     return user;
-//   } catch (error) {
-//     console.error(
-//       'Refresh token error:',
-//       error.response?.data || error.message
-//     );
-//     throw new Error(error.response?.data?.message || 'Failed to refresh token');
-//   }
-// };
-
 
 export const refreshAccessToken = async () => {
   try {
@@ -116,6 +95,7 @@ export const updateUserProfile = async (data) => {
 
 export const addAddress = async (data) => {
   const response = await api.post('/user/add_address', data);
+  console.log(response.data)
   return response.data;
 };
 

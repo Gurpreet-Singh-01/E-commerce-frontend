@@ -53,6 +53,7 @@ const Profile = () => {
     if (data) {
       setProfileForm({
         name: data.name || user?.name || '',
+        email:data.email|| user?.email,
         phone: data.phone || user?.phone || '',
       });
     }
@@ -343,6 +344,7 @@ const Profile = () => {
           </h2>
           {data?.address?.length > 0 ? (
             <div className="space-y-4">
+            {console.log(data)}
               {data.address.map((address) => (
                 <div
                   key={address._id}

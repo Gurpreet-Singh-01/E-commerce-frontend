@@ -42,7 +42,7 @@ const Login = () => {
       const user = await loginUser(email, password);
       login(user);
       toast.success('Logged in successfully!', { toastId: 'login-success' });
-      navigate('/products');
+      navigate('/');
     } catch (error) {
       console.log('Login error:', error.message);
       toast.error(error.message, { toastId: 'login-error' });
