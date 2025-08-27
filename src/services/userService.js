@@ -79,7 +79,7 @@ export const logoutUser = async () => {
 export const getUserProfile = async () => {
   try {
     const response = await api.get('/user/user');
-    return response.data.data;
+    return response.data;
   } catch (error) {
     throw error;
   }
