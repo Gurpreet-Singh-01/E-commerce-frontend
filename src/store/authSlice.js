@@ -29,10 +29,9 @@ const authSlice = createSlice({
       state.user = {
         _id: userData._id,
         email: userData.email,
-        role: userData.role || 'user',
+        role: userData.role,
         name: userData.name,
         phone: userData.phone,
-        address: userData.address,
       };
       state.isAuthenticated = true;
       try {
@@ -46,10 +45,9 @@ const authSlice = createSlice({
       state.user = {
         _id: userData._id,
         email: userData.email,
-        role: userData.role || 'user',
+        role: userData.role ,
         name: userData.name,
         phone: userData.phone,
-        address: userData.address,
       };
       state.isAuthenticated = true;
       try {

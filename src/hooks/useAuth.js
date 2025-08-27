@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { logout, setCredentials } from '../store/authSlice';
+import { logout, setCredentials, updateUser } from '../store/authSlice';
 import { setCart } from '../store/cartSlice';
 import { getUserProfile, logoutUser, refreshAccessToken } from '../services/userService';
 import { getCart } from '../services/cartService';
@@ -9,6 +9,7 @@ const useAuth = () => {
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -29,31 +30,55 @@ const useAuth = () => {
           window.location.pathname.startsWith('/products/')
       );
 
-      if (!isMounted) {
+      if (isLoggingOut || !isMounted) {
         setIsLoading(false);
         return;
       }
 
       try {
-        const userData = await getUserProfile();
-        dispatch(setCredentials({ user: userData }));
+        const userResponse = await getUserProfile();
+        if (userResponse.success && userResponse.data) {
+          const userData = {
+            _id: userResponse.data._id,
+            email: userResponse.data.email,
+            role: userResponse.data.role,
+            name: userResponse.data.name,
+            phone: userResponse.data.phone,
+            address: userResponse.data.address,
+          };
+          dispatch(setCredentials({ user: userData }));
 
-        const cartData = await getCart();
-        dispatch(setCart(cartData || { items: [], totalQuantity: 0, totalPrice: 0 }));
+          try {
+            const cartResponse = await getCart();
+            if (cartResponse.success && cartResponse.cart) {
+              dispatch(setCart(cartResponse.cart));
+            } else {
+              dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
+            }
+          } catch (cartError) {
+            console.log('Failed to fetch user cart:', cartError.message);
+            dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
+          }
 
-        setIsLoading(false);
+          setIsLoading(false);
+        } else {
+          throw new Error('No user data');
+        }
       } catch (error) {
         if (error.response?.status === 401) {
           try {
-            const userData = await refreshAccessToken();
-            dispatch(setCredentials({ user: userData }));
-            await checkAuth(); // Retry after refresh
-            return;
+            const user = await refreshAccessToken();
+            if (user && user._id) {
+              dispatch(updateUser({ user }));
+              await checkAuth(); // Retry after refresh
+              return;
+            }
+            throw new Error('Refresh token failed');
           } catch (refreshError) {
-            console.error('Refresh failed:', refreshError.message);
+            console.error('Failed to refresh token:', refreshError.message);
           }
         }
-        console.error('Auth check failed:', error.message);
+        console.error('Failed to fetch user profile:', error.message);
         dispatch(logout());
         dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
         setIsLoading(false);
@@ -68,13 +93,20 @@ const useAuth = () => {
     return () => {
       isMounted = false;
     };
-  }, [dispatch]);
+  }, [dispatch, isLoggingOut]);
 
   useEffect(() => {
-    if (user && isAuthenticated && !isLoading) {
-      localStorage.setItem('authState', JSON.stringify({ user, isAuthenticated }));
+    if (user && isAuthenticated && !isLoading && !isLoggingOut) {
+      try {
+        localStorage.setItem(
+          'authState',
+          JSON.stringify({ user, isAuthenticated })
+        );
+      } catch (error) {
+        console.log('Failed to save authState to localStorage:', error.message);
+      }
     }
-  }, [user, isAuthenticated, isLoading]);
+  }, [user, isAuthenticated]);
 
   const login = (userData) => {
     dispatch(setCredentials({ user: userData }));
@@ -82,29 +114,39 @@ const useAuth = () => {
 
   const logout_User = async () => {
     try {
+      setIsLoggingOut(true);
       await logoutUser();
       dispatch(logout());
       dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
-      localStorage.removeItem('authState');
       localStorage.removeItem('cartTotalQuantity');
-      window.location.href = '/login';
     } catch (error) {
-      console.error('Logout error:', error.message);
+      console.log('Logout error:', error.message || 'Logout failed');
       dispatch(logout());
       dispatch(setCart({ items: [], totalQuantity: 0, totalPrice: 0 }));
-      localStorage.removeItem('authState');
       localStorage.removeItem('cartTotalQuantity');
-      window.location.href = '/login';
+    } finally {
+      setIsLoggingOut(false);
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
     }
+  };
+
+  const getRole = () => {
+    return user?.role || null;
+  };
+
+  const isAdmin = () => {
+    return user?.role === 'admin';
   };
 
   return {
     user,
     isAuthenticated,
-    role: user?.role || null,
+    role: getRole(),
     login,
     logout: logout_User,
-    isAdmin: () => user?.role === 'admin',
+    isAdmin,
     isLoading,
   };
 };

@@ -344,7 +344,6 @@ const Profile = () => {
           </h2>
           {data?.address?.length > 0 ? (
             <div className="space-y-4">
-            {console.log(data)}
               {data.address.map((address) => (
                 <div
                   key={address._id}
