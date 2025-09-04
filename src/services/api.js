@@ -40,9 +40,16 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const url = originalRequest?.url || '';
 
-    const publicEndpoints = ['/product', '/category', '/login_user'];
-    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
-      url.includes(endpoint)
+    const endpointPath = new URL(originalRequest.url, window.location.origin)
+      .pathname;
+    const publicEndpoints = [
+      '/api/v1/product',
+      '/api/v1/category',
+      '/api/v1/login_user',
+    ];
+    const isPublicEndpoint = publicEndpoints.some(
+      (endpoint) =>
+        endpoint === endpointPath || endpoint === endpointPath.split('?')[0]
     );
 
     if (
