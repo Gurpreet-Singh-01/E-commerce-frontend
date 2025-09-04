@@ -1,101 +1,148 @@
-import axios from 'axios';
-import { setCredentials, logout } from '../store/authSlice';
-import { refreshAccessToken } from './userService';
-import { store } from '../store/index';
-import { API_Version } from '../utils/constants';
+// import axios from 'axios';
+// import { setCredentials, logout } from '../store/authSlice';
+// import { refreshAccessToken } from './userService';
+// import { store } from '../store/index';
+// import { API_Version } from '../utils/constants';
 
-let isRefreshing = false;
-let failedQueue = [];
+// let isRefreshing = false;
+// let failedQueue = [];
 
-const processQueue = (error) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve();
-    }
-  });
-  failedQueue = [];
-};
+// const processQueue = (error) => {
+//   failedQueue.forEach((prom) => {
+//     if (error) {
+//       prom.reject(error);
+//     } else {
+//       prom.resolve();
+//     }
+//   });
+//   failedQueue = [];
+// };
+
+// const api = axios.create({
+//   baseURL: '/api/v1',
+//   withCredentials: true,
+// });
+
+// api.interceptors.request.use((config) => {
+//   if (
+//     config.data &&
+//     !(config.data instanceof FormData) &&
+//     !config.headers['Content-Type']
+//   ) {
+//     config.headers['Content-Type'] = 'application/json';
+//   }
+//   return config;
+// });
+
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+//     const url = originalRequest?.url || '';
+
+//     const endpointPath = new URL(originalRequest.url, window.location.origin)
+//       .pathname;
+//     const publicEndpoints = [
+//       '/api/v1/product',
+//       '/api/v1/category',
+//       '/api/v1/login_user',
+//     ];
+//     const isPublicEndpoint = publicEndpoints.some(
+//       (endpoint) =>
+//         endpoint === endpointPath || endpoint === endpointPath.split('?')[0]
+//     );
+
+//     if (
+//       error.response?.status === 401 &&
+//       !originalRequest._retry &&
+//       !url.includes('/refresh_access_token') &&
+//       !url.includes('/logout') &&
+//       !isPublicEndpoint
+//     ) {
+//       originalRequest._retry = true;
+//       if (isRefreshing) {
+//         return new Promise((resolve, reject) => {
+//           failedQueue.push({ resolve, reject });
+//         })
+//           .then(() => api(originalRequest))
+//           .catch((err) => Promise.reject(err));
+//       }
+//       isRefreshing = true;
+
+//       try {
+//         const user = await refreshAccessToken();
+//         store.dispatch(setCredentials({ user }));
+//         processQueue(null);
+//         return api(originalRequest);
+//       } catch (refreshError) {
+//         console.error('Refresh token error:', refreshError.message);
+//         processQueue(refreshError);
+//         store.dispatch(logout());
+//         const publicPaths = ['/', '/products', '/login', '/register'];
+//         const isPublicPage = publicPaths.some(
+//           (path) =>
+//             window.location.pathname === path ||
+//             window.location.pathname.startsWith('/products/')
+//         );
+//         if (!isPublicPage && !window.location.pathname.includes('/login')) {
+//           window.location.href = '/login';
+//         }
+//         return Promise.reject(refreshError);
+//       } finally {
+//         isRefreshing = false;
+//       }
+//     }
+
+//     const safeError =
+//       error.response?.data?.message || error.message || 'Request failed';
+//     return Promise.reject(new Error(safeError));
+//   }
+// );
+
+// export default api;
+
+import axios from "axios";
+import { refreshAccessToken } from "./userService";
+import { store } from "../store/index";
+import { setCredentials, logout } from "../store/authSlice";
 
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: "/api/v1",
   withCredentials: true,
 });
 
+// Add Content-Type header automatically for JSON
 api.interceptors.request.use((config) => {
   if (
     config.data &&
     !(config.data instanceof FormData) &&
-    !config.headers['Content-Type']
+    !config.headers["Content-Type"]
   ) {
-    config.headers['Content-Type'] = 'application/json';
+    config.headers["Content-Type"] = "application/json";
   }
   return config;
 });
 
+// Handle 401 errors (refresh token logic)
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    const url = originalRequest?.url || '';
 
-    const endpointPath = new URL(originalRequest.url, window.location.origin)
-      .pathname;
-    const publicEndpoints = [
-      '/api/v1/product',
-      '/api/v1/category',
-      '/api/v1/login_user',
-    ];
-    const isPublicEndpoint = publicEndpoints.some(
-      (endpoint) =>
-        endpoint === endpointPath || endpoint === endpointPath.split('?')[0]
-    );
-
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !url.includes('/refresh_access_token') &&
-      !url.includes('/logout') &&
-      !isPublicEndpoint
-    ) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then(() => api(originalRequest))
-          .catch((err) => Promise.reject(err));
-      }
-      isRefreshing = true;
-
       try {
         const user = await refreshAccessToken();
         store.dispatch(setCredentials({ user }));
-        processQueue(null);
         return api(originalRequest);
-      } catch (refreshError) {
-        console.error('Refresh token error:', refreshError.message);
-        processQueue(refreshError);
+      } catch (err) {
+        localStorage.removeItem("user");
         store.dispatch(logout());
-        const publicPaths = ['/', '/products', '/login', '/register'];
-        const isPublicPage = publicPaths.some(
-          (path) =>
-            window.location.pathname === path ||
-            window.location.pathname.startsWith('/products/')
-        );
-        if (!isPublicPage && !window.location.pathname.includes('/login')) {
-          window.location.href = '/login';
-        }
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
+        return Promise.reject(err);
       }
     }
 
-    const safeError =
-      error.response?.data?.message || error.message || 'Request failed';
-    return Promise.reject(new Error(safeError));
+    return Promise.reject(error);
   }
 );
 
