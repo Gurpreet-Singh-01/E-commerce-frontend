@@ -166,14 +166,14 @@ const Products = () => {
         <div className="mb-8 bg-white p-6 rounded-lg shadow-sm">
           <div className="flex flex-col md:flex-row gap-6">
             <form onSubmit={handleSearch} className="flex-1">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col md:flex-row gap-2">
                 <Input
                   type="text"
                   name="search"
                   placeholder="Search products (e.g., Apple Cover)..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="flex-1"
+                  className=""
                 />
                 <Button type="submit" size="medium">
                   Search
@@ -186,10 +186,14 @@ const Products = () => {
                 <label className="block text-sm font-medium text-neutral-dark font-headings mb-1">
                   Category
                 </label>
+                {console.log(categoriesData)}
                 {categoriesLoading ? (
                   <Loader size="small" />
                 ) : categoriesError || !categoriesData?.data?.length ? (
-                  <p className="text-error text-sm">No categories available</p>
+                  
+                  <p className="text-error text-sm">
+                    {console.log(categoriesData)}
+                    No categories available</p>
                 ) : (
                   <select
                     name="category"
@@ -197,6 +201,7 @@ const Products = () => {
                     onChange={(e) => setInputCategory(e.target.value)}
                     className="w-full border border-neutral-light rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary font-text"
                   >
+                    {console.log(categoriesData)}
                     <option value="">All Categories</option>
                     {categoriesData.data.map((cat) => (
                       <option key={cat._id} value={cat._id}>
@@ -206,7 +211,7 @@ const Products = () => {
                   </select>
                 )}
               </div>
-              <div className="flex gap-4">
+              <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-neutral-dark font-headings mb-1">
                     Min Price
@@ -260,6 +265,7 @@ const Products = () => {
         {isLoading && <Loader size="large" className="my-8" />}
         {data && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {console.log(data)}
             {data.data?.length > 0 ? (
               data.data.map((product) => (
                 <ProductCard
@@ -278,6 +284,8 @@ const Products = () => {
               ))
             ) : (
               <p className="text-center text-neutral col-span-full">
+            {console.log(data)}
+
                 No products found
               </p>
             )}
